@@ -104,3 +104,10 @@ deploy:
   type: git
   repo: https://github.com/{YangJiePerfect}/{YangJiePerfect}.github.io.git
   branch: main
+
+# 插入代码到头部 </head> 之前 和 底部 </body> 之前
+inject:
+  head:
+    # - <link rel="stylesheet" href="/css/custom.css">
+  bottom:
+    - <script src="https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/autoload.js"></script>
