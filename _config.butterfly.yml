@@ -11,6 +11,11 @@ author: 阳介
 language: zh-CN
 timezone: ''
 
+# 头像
+avatar:
+  img: /img/球面化宵宫头像.png
+  effect: false
+
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
 url: http://yangjie520.ccwu.cc
@@ -108,6 +113,20 @@ deploy:
 # 插入代码到头部 </head> 之前 和 底部 </body> 之前
 inject:
   head:
-    # - <link rel="stylesheet" href="/css/custom.css">
+    - <link rel="stylesheet" href="/css/header-video.css">
+    - <link rel="preconnect" href="https://fonts.googleapis.com">
+    - <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    - <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=block" rel="stylesheet">
   bottom:
     - <script src="https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/autoload.js"></script>
+    - <script src="/js/header-video.js"></script>
+
+# 作者卡片
+aside:
+  card_author:
+    button:
+      link: https://github.com/YangJiePerfect
+
+# 页脚
+footer:
+  custom_text: Deployed On Cloudflare Pages<br>部分素材来源自miHoYo

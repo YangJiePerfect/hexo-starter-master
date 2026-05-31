@@ -3,7 +3,7 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 阳介
+title: 阳介的小站
 subtitle: ''
 description: ''
 keywords:
@@ -97,6 +97,17 @@ ignore:
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
 theme: butterfly
+
+# Inject
+inject:
+  head:
+    - <link rel="stylesheet" href="/css/header-video.css">
+    - "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">"
+    - "<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>"
+    - "<link href=\"https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=block\" rel=\"stylesheet\">"
+  bottom:
+    - <script src="https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/autoload.js"></script>
+    - <script src="/js/header-video.js"></script>
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
