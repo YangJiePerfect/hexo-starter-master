@@ -257,7 +257,13 @@ body.is-post-page #body-wrap > main.layout {
   border-radius: 28px;
 }
 
-.recent-post-item .post_cover .post-bg,
+#recent-posts .recent-post-item .post_cover .post-bg {
+  border-radius: 28px;
+  width: 94%;
+  height: 94%;
+  margin: 3%;
+}
+
 .post-bg {
   border-radius: 28px;
 }
@@ -265,10 +271,10 @@ body.is-post-page #body-wrap > main.layout {
 .recent-post-item,
 .card-widget {
   border-radius: 28px;
-  background: rgba(255, 255, 255, 0.2) !important;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.45) !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
 }
 
 #nav {

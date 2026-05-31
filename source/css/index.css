@@ -2641,13 +2641,6 @@ figure.highlight pre .javascript .function {
     height: 18.8em;
   }
 }
-#recent-posts .recent-post-item:hover .post-bg {
-  -webkit-transform: scale(1.05);
-  -moz-transform: scale(1.05);
-  -o-transform: scale(1.05);
-  -ms-transform: scale(1.05);
-  transform: scale(1.05);
-}
 #recent-posts .recent-post-item.ads-wrap {
   display: block !important;
   height: auto !important;
@@ -2685,7 +2678,7 @@ figure.highlight pre .javascript .function {
   z-index: -4;
 }
 #recent-posts .recent-post-item >.recent-post-info {
-  padding: 0 40px;
+  padding: 0 15px;
   width: 58%;
 }
 @media screen and (max-width: 768px) {
@@ -4415,7 +4408,7 @@ figure.highlight pre .javascript .function {
   position: fixed;
   top: -60px;
   z-index: 91;
-  background: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.3);
   -webkit-box-shadow: 0 5px 6px -5px rgba(133,133,133,0.6);
   box-shadow: 0 5px 6px -5px rgba(133,133,133,0.6);
   -webkit-transition: -webkit-transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
