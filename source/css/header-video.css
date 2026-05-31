@@ -60,7 +60,7 @@
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-radius: 20px 20px 0 0;
+  border-radius: 28px 28px 0 0;
   position: relative;
   z-index: 1;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -252,19 +252,19 @@ body.is-post-page #body-wrap > main.layout {
 }
 
 .recent-post-item .post_cover {
-  padding: 0;
+  padding: 15px;
   background: transparent;
-  border-radius: 20px;
+  border-radius: 28px;
 }
 
 .recent-post-item .post_cover .post-bg,
 .post-bg {
-  border-radius: 20px;
+  border-radius: 28px;
 }
 
 .recent-post-item,
 .card-widget {
-  border-radius: 20px;
+  border-radius: 28px;
   background: rgba(255, 255, 255, 0.2) !important;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
