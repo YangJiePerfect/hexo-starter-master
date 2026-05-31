@@ -48,8 +48,16 @@
   pointer-events: none;
 }
 
-#page-header .header-video-mask {
-  display: none;
+#page-header {
+  background-color: transparent !important;
+}
+
+#page-header:not(.not-top-img):before {
+  display: none !important;
+}
+
+body {
+  background: transparent !important;
 }
 
 #body-wrap > main.layout {
@@ -64,39 +72,6 @@
   position: relative;
   z-index: 1;
   border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.global-bg-video {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: -2;
-  pointer-events: none;
-  transition: filter 0.4s ease;
-}
-
-.global-bg-video.frosted {
-  filter: blur(10px);
-}
-
-.frosted-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.frosted-overlay.active {
-  opacity: 1;
 }
 
 #nav .site-name {
@@ -206,18 +181,6 @@
   vertical-align: middle;
 }
 
-body.is-post-page {
-  background: #ffffff;
-}
-
-body.is-post-page #body-wrap {
-  background: #ffffff;
-}
-
-body.is-post-page #body-wrap > main.layout {
-  margin-top: 0;
-}
-
 #page-header.post-bg {
   height: 350px;
   background-size: cover !important;
@@ -259,9 +222,6 @@ body.is-post-page #body-wrap > main.layout {
 
 #recent-posts .recent-post-item .post_cover .post-bg {
   border-radius: 28px;
-  width: 94%;
-  height: 94%;
-  margin: 3%;
 }
 
 .post-bg {

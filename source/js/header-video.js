@@ -4,8 +4,6 @@
     if (!firstPost) return;
 
     var headerVideo = document.querySelector('#page-header .header-video-bg');
-    var globalVideo = document.querySelector('.global-bg-video');
-    var overlay = document.querySelector('.frosted-overlay');
 
     var ticking = false;
 
@@ -15,12 +13,6 @@
 
       if (headerVideo) {
         headerVideo.classList.toggle('frosted', shouldFrost);
-      }
-      if (globalVideo) {
-        globalVideo.classList.toggle('frosted', shouldFrost);
-      }
-      if (overlay) {
-        overlay.classList.toggle('active', shouldFrost);
       }
       ticking = false;
     }
@@ -40,25 +32,6 @@
     window.addEventListener('scroll', onScroll, { passive: true });
 
     updateFrosted();
-  }
-
-  function injectGlobalBg() {
-    if (document.querySelector('.global-bg-video')) return;
-
-    var video = document.createElement('video');
-    video.className = 'global-bg-video';
-    video.src = '/bg.webm';
-    video.autoplay = true;
-    video.loop = true;
-    video.muted = true;
-    video.playsInline = true;
-    video.setAttribute('playsinline', '');
-
-    var overlay = document.createElement('div');
-    overlay.className = 'frosted-overlay';
-
-    document.body.insertBefore(overlay, document.body.firstChild);
-    document.body.insertBefore(video, document.body.firstChild);
   }
 
   function injectHeaderVideo() {
@@ -131,20 +104,9 @@
     var isHomepage = header.classList.contains('full_page');
     document.body.classList.toggle('is-homepage', isHomepage);
     document.body.classList.toggle('is-post-page', header.classList.contains('post-bg'));
-
-    var globalVideo = document.querySelector('.global-bg-video');
-    var overlay = document.querySelector('.frosted-overlay');
-
-    if (globalVideo) {
-      globalVideo.style.display = isHomepage ? '' : 'none';
-    }
-    if (overlay) {
-      overlay.style.display = isHomepage ? '' : 'none';
-    }
   }
 
   function init() {
-    injectGlobalBg();
     injectHeaderVideo();
     updatePageType();
     initScrollDetector();
@@ -159,7 +121,6 @@
   }
 
   document.addEventListener('pjax:complete', function () {
-    injectGlobalBg();
     injectHeaderVideo();
     updatePageType();
     initScrollDetector();
