@@ -1,4 +1,29 @@
 (function () {
+  var BLUR_TARGET_FPS = 30;
+  var blurFrameCount = 0;
+  var blurFrameInterval = Math.round(60 / Math.max(BLUR_TARGET_FPS, 1));
+
+  function shouldUpdateBlur() {
+    blurFrameCount++;
+    if (blurFrameCount >= blurFrameInterval) {
+      blurFrameCount = 0;
+      return true;
+    }
+    return false;
+  }
+
+  function cleanupVideo() {
+    var video = document.querySelector('#page-header .header-video-bg');
+    if (video) {
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+      if (video.parentNode) {
+        video.parentNode.removeChild(video);
+      }
+    }
+  }
+
   function initScrollDetector() {
     var firstPost = document.querySelector('.recent-post-item');
     if (!firstPost) return;
@@ -6,13 +31,18 @@
     var headerVideo = document.querySelector('#page-header .header-video-bg');
 
     var ticking = false;
+    var pendingShouldFrost = null;
 
     function updateFrosted() {
       var rect = firstPost.getBoundingClientRect();
       var shouldFrost = rect.top <= 0;
 
-      if (headerVideo) {
-        headerVideo.classList.toggle('frosted', shouldFrost);
+      if (shouldUpdateBlur()) {
+        pendingShouldFrost = shouldFrost;
+      }
+
+      if (headerVideo && pendingShouldFrost !== null) {
+        headerVideo.classList.toggle('frosted', pendingShouldFrost);
       }
       ticking = false;
     }
@@ -38,6 +68,13 @@
     var header = document.getElementById('page-header');
     if (!header) return;
 
+    var isHomepage = header.classList.contains('full_page');
+
+    if (!isHomepage) {
+      cleanupVideo();
+      return;
+    }
+
     if (!header.querySelector('.header-video-bg')) {
       var video = document.createElement('video');
       video.className = 'header-video-bg';
@@ -47,6 +84,8 @@
       video.muted = true;
       video.playsInline = true;
       video.setAttribute('playsinline', '');
+      video.setAttribute('preload', 'metadata');
+      video.setAttribute('disableRemotePlayback', '');
 
       var mask = document.createElement('div');
       mask.className = 'header-video-mask';
@@ -121,10 +160,21 @@
   }
 
   document.addEventListener('pjax:complete', function () {
+    cleanupVideo();
     injectHeaderVideo();
     updatePageType();
     initScrollDetector();
     injectMailButton();
     reorderFooter();
+  });
+
+  document.addEventListener('visibilitychange', function () {
+    var video = document.querySelector('#page-header .header-video-bg');
+    if (!video) return;
+    if (document.hidden) {
+      video.pause();
+    } else {
+      video.play().catch(function () {});
+    }
   });
 })();
