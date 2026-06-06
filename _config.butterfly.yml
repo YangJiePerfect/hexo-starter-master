@@ -9,12 +9,19 @@ description: ''
 keywords:
 author: 阳介
 language: zh-CN
-timezone: ''
+
 
 # 头像
 avatar:
   img: /img/球面化宵宫头像.png
   effect: false
+timezone: ''
+# 导航菜单
+menu:
+  首页: / || fas fa-home
+  归档: /archives/ || fas fa-archive
+  标签: /tags/ || fas fa-tags
+  关于: /about/ || fas fa-heart
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
@@ -114,12 +121,18 @@ deploy:
 inject:
   head:
     - <link rel="stylesheet" href="/css/header-video.css">
+    - <link rel="stylesheet" href="/css/target-cursor.css">
     - <link rel="preconnect" href="https://fonts.googleapis.com">
     - <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     - <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=block" rel="stylesheet">
   bottom:
     - <script src="https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/autoload.js"></script>
+    - <script>window.addEventListener('error',function(e){if(e.message&&e.message.indexOf('hitTest')!==-1){e.preventDefault();return true}})</script>
+    - <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
     - <script src="/js/header-video.js"></script>
+    - <script src="/js/target-cursor.js"></script>
+    - <script src="/js/cursor-toggle.js"></script>
+    - <script>document.addEventListener('DOMContentLoaded',function(){var hide=document.getElementById('rightside-config-hide');if(hide&&!document.getElementById('cursor-toggle')){var btn=document.createElement('button');btn.id='cursor-toggle';btn.type='button';btn.title='切换鼠标特效';btn.setAttribute('aria-pressed','true');btn.innerHTML='<i class="fas fa-mouse-pointer"></i>';hide.appendChild(btn)}})</script>
 
 # 作者卡片
 aside:
@@ -130,3 +143,25 @@ aside:
 # 页脚
 footer:
   custom_text: Deployed On Cloudflare Pages<br>部分素材来源自miHoYo
+
+# 搜索
+search:
+  use: local_search
+  local_search:
+    preload: false
+    top_n_per_article: 1
+    unescape: false
+
+# 标签页面UI（使用首页样式）
+tag_ui: index
+
+# 页面加载动画
+preloader:
+  enable: false
+
+# PJAX无刷新跳转
+pjax:
+  enable: true
+
+# 入场动画
+enter_transitions: true

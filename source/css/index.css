@@ -227,15 +227,15 @@ template {
 #article-container .shuoshuo-item,
 #aside-content .card-widget,
 .layout .pagination > *:not(.space) {
-  background: var(--card-bg);
-  -webkit-box-shadow: var(--card-box-shadow);
-  box-shadow: var(--card-box-shadow);
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
-  -o-transition: all 0.3s;
-  -ms-transition: all 0.3s;
-  transition: all 0.3s;
-  border-radius: 28px ;
+    background: #ffffffcf;
+    -webkit-box-shadow: var(--card-box-shadow);
+    box-shadow: var(--card-box-shadow);
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    transition: all 0.3s;
+    border-radius: 28px;
 }
 .cardHover:hover,
 .layout > div:first-child:not(.nc):hover,
@@ -4416,8 +4416,6 @@ figure.highlight pre .javascript .function {
   -o-transition: -o-transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
   -ms-transition: -ms-transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
   transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
-  will-change: transform;
-  backdrop-filter: blur(7px);
 }
 #page-header.nav-fixed #nav #blog-info {
   color: var(--font-color);

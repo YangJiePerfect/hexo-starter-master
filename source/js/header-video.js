@@ -1,180 +1,21 @@
-(function () {
-  var BLUR_TARGET_FPS = 30;
-  var blurFrameCount = 0;
-  var blurFrameInterval = Math.round(60 / Math.max(BLUR_TARGET_FPS, 1));
-
-  function shouldUpdateBlur() {
-    blurFrameCount++;
-    if (blurFrameCount >= blurFrameInterval) {
-      blurFrameCount = 0;
-      return true;
-    }
-    return false;
-  }
-
-  function cleanupVideo() {
-    var video = document.querySelector('#page-header .header-video-bg');
-    if (video) {
-      video.pause();
-      video.removeAttribute('src');
-      video.load();
-      if (video.parentNode) {
-        video.parentNode.removeChild(video);
-      }
-    }
-  }
-
-  function initScrollDetector() {
-    var firstPost = document.querySelector('.recent-post-item');
-    if (!firstPost) return;
-
-    var headerVideo = document.querySelector('#page-header .header-video-bg');
-
-    var ticking = false;
-    var pendingShouldFrost = null;
-
-    function updateFrosted() {
-      var rect = firstPost.getBoundingClientRect();
-      var shouldFrost = rect.top <= 0;
-
-      if (shouldUpdateBlur()) {
-        pendingShouldFrost = shouldFrost;
-      }
-
-      if (headerVideo && pendingShouldFrost !== null) {
-        headerVideo.classList.toggle('frosted', pendingShouldFrost);
-      }
-      ticking = false;
-    }
-
-    function onScroll() {
-      if (!ticking) {
-        requestAnimationFrame(updateFrosted);
-        ticking = true;
-      }
-    }
-
-    if (window.frostedScrollHandler) {
-      window.removeEventListener('scroll', window.frostedScrollHandler, { passive: true });
-    }
-
-    window.frostedScrollHandler = onScroll;
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    updateFrosted();
-  }
-
-  function injectHeaderVideo() {
-    var header = document.getElementById('page-header');
-    if (!header) return;
-
-    var isHomepage = header.classList.contains('full_page');
-
-    if (!isHomepage) {
-      cleanupVideo();
-      return;
-    }
-
-    if (!header.querySelector('.header-video-bg')) {
-      var video = document.createElement('video');
-      video.className = 'header-video-bg';
-      video.src = '/header-bg.webm';
-      video.autoplay = true;
-      video.loop = true;
-      video.muted = true;
-      video.playsInline = true;
-      video.setAttribute('playsinline', '');
-      video.setAttribute('preload', 'metadata');
-      video.setAttribute('disableRemotePlayback', '');
-
-      var mask = document.createElement('div');
-      mask.className = 'header-video-mask';
-
-      header.insertBefore(mask, header.firstChild);
-      header.insertBefore(video, header.firstChild);
-    }
-
-    if (!header.querySelector('.header-welcome')) {
-      var welcome = document.createElement('div');
-      welcome.className = 'header-welcome';
-
-      var welcomeText = document.createElement('div');
-      welcomeText.className = 'welcome-text';
-      welcomeText.textContent = '欢迎来到阳介的小站';
-
-      var poemText = document.createElement('div');
-      poemText.className = 'poem-text';
-      poemText.textContent = '春有百花秋有月, 夏有凉风冬有雪';
-
-      welcome.appendChild(welcomeText);
-      welcome.appendChild(poemText);
-      header.appendChild(welcome);
-    }
-  }
-
-  function injectMailButton() {
-    if (document.querySelector('#card-mail-btn')) return;
-
-    var cardInfoBtn = document.getElementById('card-info-btn');
-    if (!cardInfoBtn) return;
-
-    var mailBtn = document.createElement('a');
-    mailBtn.id = 'card-mail-btn';
-    mailBtn.target = '_blank';
-    mailBtn.rel = 'noopener';
-    mailBtn.href = 'https://mymailbox.yangjie520.ccwu.cc/';
-    mailBtn.innerHTML = '<i class="fas fa-envelope"></i><span>阳介的邮箱小站</span>';
-
-    cardInfoBtn.parentNode.insertBefore(mailBtn, cardInfoBtn.nextSibling);
-  }
-
-  function reorderFooter() {
-    var frameworkInfo = document.querySelector('.footer-copyright .framework-info');
-    var customText = document.querySelector('.footer_custom_text');
-    if (!frameworkInfo || !customText) return;
-
-    customText.parentNode.insertBefore(frameworkInfo, customText.nextSibling);
-  }
-
-  function updatePageType() {
-    var header = document.getElementById('page-header');
-    if (!header) return;
-
-    var isHomepage = header.classList.contains('full_page');
-    document.body.classList.toggle('is-homepage', isHomepage);
-    document.body.classList.toggle('is-post-page', header.classList.contains('post-bg'));
-  }
-
-  function init() {
-    injectHeaderVideo();
-    updatePageType();
-    initScrollDetector();
-    injectMailButton();
-    reorderFooter();
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-
-  document.addEventListener('pjax:complete', function () {
-    cleanupVideo();
-    injectHeaderVideo();
-    updatePageType();
-    initScrollDetector();
-    injectMailButton();
-    reorderFooter();
-  });
-
-  document.addEventListener('visibilitychange', function () {
-    var video = document.querySelector('#page-header .header-video-bg');
-    if (!video) return;
-    if (document.hidden) {
-      video.pause();
-    } else {
-      video.play().catch(function () {});
-    }
-  });
-})();
+(function(){
+var BLUR_TARGET_FPS=30;var blurFrameCount=0;var blurFrameInterval=Math.round(60/Math.max(BLUR_TARGET_FPS,1));var blurCooldownUntil=0;
+function shouldUpdateBlur(){blurFrameCount++;if(blurFrameCount>=blurFrameInterval){blurFrameCount=0;return true}return false}
+function isVideoPage(){var p=window.location.pathname;return p==='/'||p==='/archives/'||p==='/archives'||/^\/archives\/\d{4}\/\d{2}\//.test(p)||p==='/tags/'||p==='/tags'||p==='/about/'||p==='/about'}
+function isVideoPageUrl(pathname){var p=pathname.replace(/\/$/,'')||'/';return p==='/'||p==='/archives'||/^\/archives\/\d{4}\/\d{2}/.test(p)||p==='/tags'||p==='/about'}
+function getWelcomeText(){var pathname=window.location.pathname;if(/^\/archives\/\d{4}\/\d{2}\//.test(pathname))return{main:'月度归档',sub:'一月一回首，一步一安然'};if(pathname==='/archives/'||pathname==='/archives')return{main:'总归档',sub:'时光知味，岁月沉香'};if(pathname==='/tags/'||pathname==='/tags')return{main:'标签',sub:'春有百花秋有月, 夏有凉风冬有雪'};if(pathname==='/about/'||pathname==='/about')return{main:'关于',sub:'世界上只有一种英雄主义，就是看清生活的真相之后依然热爱生活'};return{main:'欢迎来到阳介的小站',sub:'春有百花秋有月, 夏有凉风冬有雪'}}
+function updateWelcomeText(){var wrapper=document.querySelector('body > .video-wrapper');if(!wrapper)return;var wt=wrapper.querySelector('.welcome-text');var pt=wrapper.querySelector('.poem-text');if(!wt||!pt)return;var t=getWelcomeText();wt.textContent=t.main;pt.textContent=t.sub}
+function ensureVideoWrapper(){if(document.querySelector('body > .video-wrapper'))return;var w=document.createElement('div');w.className='video-wrapper';var v=document.createElement('video');v.className='header-video-bg';v.src='/header-bg.webm';v.autoplay=true;v.loop=true;v.muted=true;v.playsInline=true;v.setAttribute('playsinline','');v.setAttribute('preload','auto');v.setAttribute('disableRemotePlayback','');w.appendChild(v);w.appendChild(Object.assign(document.createElement('div'),{className:'header-video-mask'}));var welcome=document.createElement('div');welcome.className='header-welcome';welcome.innerHTML='<div class="welcome-text"></div><div class="poem-text"></div>';w.appendChild(welcome);document.body.appendChild(w)}
+function updateVideoVisibility(){var video=isVideoPage();document.body.classList.toggle('is-video-page',video);updateWelcomeText();var header=document.getElementById('page-header');if(header){header.classList.toggle('video-page',video)}}
+function initScrollDetector(){var mainContent=document.querySelector('#content-inner')||document.querySelector('main#content');if(!mainContent)return;var headerVideo=document.querySelector('body > .video-wrapper .header-video-bg');var ticking=false;function updateFrosted(){ticking=false;var now=Date.now();if(now<blurCooldownUntil){if(headerVideo)headerVideo.classList.remove('frosted');return}if(!shouldUpdateBlur())return;var rect=mainContent.getBoundingClientRect();headerVideo.classList.toggle('frosted',rect.top<=0)}function onScroll(){if(!ticking){ticking=true;requestAnimationFrame(updateFrosted)}}if(window.frostedScrollHandler)window.removeEventListener('scroll',window.frostedScrollHandler,{passive:true});window.frostedScrollHandler=onScroll;window.addEventListener('scroll',onScroll,{passive:true})}
+function injectMailButton(){if(document.querySelector('#card-mail-btn'))return;var cardInfoBtn=document.getElementById('card-info-btn');if(!cardInfoBtn)return;var mailBtn=document.createElement('a');mailBtn.id='card-mail-btn';mailBtn.target='_blank';mailBtn.rel='noopener';mailBtn.href='https://mymailbox.yangjie520.ccwu.cc/';mailBtn.innerHTML='<i class="fas fa-envelope"></i><span>阳介的邮箱小站</span>';cardInfoBtn.parentNode.insertBefore(mailBtn,cardInfoBtn.nextSibling)}
+function reorderFooter(){var frameworkInfo=document.querySelector('.footer-copyright .framework-info');var customText=document.querySelector('.footer_custom_text');if(!frameworkInfo||!customText)return;customText.parentNode.insertBefore(frameworkInfo,customText.nextSibling)}
+function setupNavClickInterceptor(){document.addEventListener('click',function(e){var link=e.target.closest('#menus a, #nav a[href]');if(!link)return;var href=link.getAttribute('href');if(!href||href.startsWith('#')||href.startsWith('http'))return;var norm=function(p){return p==='/'?p:p.replace(/\/+$/,'')};if(norm(window.location.pathname)===norm(href)){e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();var target=document.getElementById('content-inner')||document.querySelector('main#content');if(target){var pos=target.getBoundingClientRect().top+window.scrollY;var nav=document.getElementById('page-header');if(nav&&nav.classList.contains('fixed'))pos=pos-(nav.offsetHeight||60);window.scrollTo({top:pos,behavior:'smooth'})}else{window.scrollTo({top:0,behavior:'smooth'})}}},true)}
+function setupPjaxTransition(){var pendingUrl=null;document.addEventListener('click',function(e){var link=e.target.closest('a[href]');if(!link)return;var href=link.getAttribute('href');if(href&&href.startsWith('/')&&!href.startsWith('//')&&href.indexOf('#')===-1)pendingUrl=href},true);document.addEventListener('pjax:send',function(){blurCooldownUntil=Date.now()+500;var hv=document.querySelector('body > .video-wrapper .header-video-bg');if(hv)hv.classList.remove('frosted');if(pendingUrl)document.body.classList.toggle('is-video-page',isVideoPageUrl(pendingUrl))});document.addEventListener('pjax:complete',function(){pendingUrl=null;blurCooldownUntil=Date.now()+300;window.scrollTo(0,0);var nav=document.getElementById('nav');if(nav){nav.style.opacity='0';nav.style.transform='translateY(-35px)';requestAnimationFrame(function(){requestAnimationFrame(function(){var a=nav.animate([{transform:'translateY(-35px)',opacity:'0'},{transform:'translateY(0)',opacity:'1'}],{duration:500,easing:'ease',fill:'forwards'});a.onfinish=function(){nav.style.opacity='';nav.style.transform=''}})})}})}
+function updatePageType(){var header=document.getElementById('page-header');if(!header)return;var p=window.location.pathname;var isHomepage=p==='/'||p==='/index.html';var isMonthlyArchive=/^\/archives\/\d{4}\/\d{2}\//.test(p);var isArchiveIndex=p==='/archives/'||p==='/archives';var isTagsPage=p==='/tags/'||p==='/tags';var isAboutPage=p==='/about/'||p==='/about';var cl=document.body.classList;cl.toggle('is-homepage',isHomepage);cl.toggle('is-post-page',header.classList.contains('post-bg'));cl.toggle('is-archives-page',isArchiveIndex||isMonthlyArchive);cl.toggle('is-tags-page',isTagsPage);cl.toggle('is-about-page',isAboutPage);updateVideoVisibility()}
+function init(){ensureVideoWrapper();updatePageType();initScrollDetector();injectMailButton();reorderFooter();setupNavClickInterceptor()}
+function onVisibilityChange(){var video=document.querySelector('body > .video-wrapper .header-video-bg');if(!video)return;if(document.hidden)video.pause();else video.play().catch(function(){})}
+blurCooldownUntil=Date.now()+500;setupPjaxTransition();
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+document.addEventListener('pjax:complete',function(){updatePageType();initScrollDetector();injectMailButton();reorderFooter()});
+document.addEventListener('visibilitychange',onVisibilityChange)})();

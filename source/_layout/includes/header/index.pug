@@ -24,14 +24,14 @@ if !theme.disable_top_img && page.top_img !== false
 
   if top_img !== false
     - bg_img = getBgPath(top_img)
-    - headerClassName = globalPageType === 'home' ? 'full_page' : globalPageType === 'post' ? 'post-bg' : 'not-home-page'
+    - headerClassName = (globalPageType === 'home' || globalPageType === 'archive') ? 'full_page' : globalPageType === 'post' ? 'post-bg' : 'not-home-page'
 
 header#page-header(class=`${headerClassName + isFixedClass}` style=bg_img)
   include ./nav.pug
   if top_img !== false
     if globalPageType === 'post'
       include ./post-info.pug
-    else if globalPageType === 'home'
+    else if globalPageType === 'home' || globalPageType === 'archive'
       #site-info
         if theme.subtitle.enable
           - var loadSubJs = true
