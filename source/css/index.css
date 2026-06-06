@@ -4157,6 +4157,7 @@ figure.highlight pre .javascript .function {
 }
 #footer {
   position: relative;
+  z-index: 1;
   background-color: #49b1f5;
   background-attachment: scroll;
   background-position: bottom;
