@@ -13,7 +13,7 @@ language: zh-CN
 
 # 头像
 avatar:
-  img: "/img/Yoimiya's avatar is spherical.png"
+  img: /img/yoimiya-avatar-spherical.png
   effect: false
 timezone: ''
 # 导航菜单
