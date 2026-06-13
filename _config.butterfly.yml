@@ -131,6 +131,7 @@ inject:
     - <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
     - <script src="/js/header-video.js"></script>
     - <script src="/js/target-cursor.js"></script>
+    - <script src="/js/colo-info.js"></script>
     - <script src="/js/cursor-toggle.js"></script>
     - <script>document.addEventListener('DOMContentLoaded',function(){var hide=document.getElementById('rightside-config-hide');if(hide&&!document.getElementById('cursor-toggle')){var btn=document.createElement('button');btn.id='cursor-toggle';btn.type='button';btn.title='切换鼠标特效';btn.setAttribute('aria-pressed','true');btn.innerHTML='<i class="fas fa-mouse-pointer"></i>';hide.appendChild(btn)}})</script>
 

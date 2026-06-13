@@ -44,3 +44,90 @@ body{background:transparent!important}
 .search-dialog{background:rgba(255,255,255,.85)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.3);box-shadow:0 8px 32px rgba(0,0,0,.15);contain:layout style paint}
 .search-dialog .search-close-button{position:absolute;top:12px;right:12px;flex:0 0 auto;width:32px!important;height:32px;aspect-ratio:1;background:none!important;border:none!important;outline:none!important;box-shadow:none!important;padding:0!important;margin:0!important;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--grey,#555);transition:color .2s;z-index:1}
 .search-dialog .search-close-button:hover{color:var(--search-color,#000)}
+
+/* ========== 移动端专属样式 ========== */
+
+/* 隐藏 Live2D canvas */
+body.is-mobile #live2d,
+body.is-mobile canvas[id^="live2d"]{display:none!important}
+
+/* 关闭自定义鼠标样式 */
+body.is-mobile .target-cursor-wrapper{display:none!important}
+body.is-mobile,body.is-mobile *{cursor:auto!important}
+
+/* 修复 main 元素上边界移动至顶部时背景高斯模糊 */
+body.is-mobile.is-homepage #body-wrap > main.layout,
+body.is-mobile.is-archives-page #body-wrap > main.layout,
+body.is-mobile.is-tags-page #body-wrap > main.layout,
+body.is-mobile.is-about-page #body-wrap > main.layout{
+  margin-top:0;
+  padding:20px 16px;
+  max-width:100%;
+  border-radius:24px 24px 0 0;
+  background:rgba(255,255,255,.18);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  contain:layout style paint
+}
+
+/* 移动端 post 页面 main 元素 */
+body.is-mobile.is-post-page #body-wrap > main.layout{
+  padding:16px;
+  background:rgba(255,255,255,.18);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  contain:layout style paint
+}
+
+/* 移动端页面标题区域调整 */
+body.is-mobile.is-homepage #page-header,
+body.is-mobile.is-video-page #page-header{height:100vh!important}
+
+/* 移动端侧边栏取消左边距并居中 */
+body.is-mobile.is-homepage #body-wrap > main.layout > #aside-content,
+body.is-mobile.is-archives-page #body-wrap > main.layout > #aside-content,
+body.is-mobile.is-tags-page #body-wrap > main.layout > #aside-content,
+body.is-mobile.is-about-page #body-wrap > main.layout > #aside-content{
+  padding-left:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  width:100%
+}
+
+/* 移动端 card-widget 居中对齐 */
+body.is-mobile.mobile-card-unify .card-widget,
+body.is-mobile.mobile-card-unify .sticky_layout{
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box
+}
+
+/* 移动端欢迎文字响应式 */
+body.is-mobile .video-wrapper .header-welcome{
+  width:280px;
+  height:280px
+}
+body.is-mobile .video-wrapper .header-welcome .welcome-text{font-size:28px}
+body.is-mobile .video-wrapper .header-welcome .poem-text{font-size:15px;margin-top:8px}
+
+/* 移动端 recent-post-item 全宽 */
+body.is-mobile.is-homepage .recent-post-item{max-width:100%}
+body.is-mobile .recent-post-item .post_cover{padding:10px}
+
+/* 移动端文章列表项调整 */
+body.is-mobile .recent-post-item{flex-direction:column}
+body.is-mobile .recent-post-item .post_cover{width:100%!important;padding:0}
+body.is-mobile .recent-post-item .post_cover .post-bg{border-radius:24px 24px 0 0!important;height:200px;object-fit:cover}
+body.is-mobile .recent-post-item .recent-post-info{padding:16px;width:100%}
+
+/* Cloudflare 节点信息卡片 */
+#colo-info .webinfo{display:flex;flex-direction:column}
+#colo-info .webinfo-item{display:flex;align-items:center;padding:2px 10px 0}
+#colo-info .webinfo-item:first-child{justify-content:space-between}
+#colo-info .webinfo-item:first-child.ip-wrap{flex-direction:column;align-items:flex-start}
+#colo-info .webinfo-item:not(:first-child){justify-content:space-between}
+#colo-info .webinfo-item:first-child .item-name{text-align:left}
+#colo-info .webinfo-item:first-child.ip-wrap .item-count{width:100%;text-align:right}
+#colo-info .webinfo-item .item-name{flex:1;padding-right:20px}
+#colo-info .item-headline i{animation:fa-flip 2s infinite linear}
