@@ -47,15 +47,11 @@ body{background:transparent!important}
 
 /* ========== 移动端专属样式 ========== */
 
-/* 隐藏 Live2D canvas */
-body.is-mobile #live2d,
-body.is-mobile canvas[id^="live2d"]{display:none!important}
-
 /* 关闭自定义鼠标样式 */
 body.is-mobile .target-cursor-wrapper{display:none!important}
 body.is-mobile,body.is-mobile *{cursor:auto!important}
 
-/* 修复 main 元素上边界移动至顶部时背景高斯模糊 */
+/* 移动端 main 元素默认无毛玻璃，上边界达屏幕顶部时触发 */
 body.is-mobile.is-homepage #body-wrap > main.layout,
 body.is-mobile.is-archives-page #body-wrap > main.layout,
 body.is-mobile.is-tags-page #body-wrap > main.layout,
@@ -65,9 +61,18 @@ body.is-mobile.is-about-page #body-wrap > main.layout{
   max-width:100%;
   border-radius:24px 24px 0 0;
   background:rgba(255,255,255,.18);
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+  contain:layout style paint;
+  transition:backdrop-filter .4s cubic-bezier(.25,.46,.45,.94),-webkit-backdrop-filter .4s cubic-bezier(.25,.46,.45,.94),background .4s cubic-bezier(.25,.46,.45,.94)
+}
+body.is-mobile.is-homepage #body-wrap > main.layout.frosted,
+body.is-mobile.is-archives-page #body-wrap > main.layout.frosted,
+body.is-mobile.is-tags-page #body-wrap > main.layout.frosted,
+body.is-mobile.is-about-page #body-wrap > main.layout.frosted{
   backdrop-filter:blur(12px);
   -webkit-backdrop-filter:blur(12px);
-  contain:layout style paint
+  background:rgba(255,255,255,.25)
 }
 
 /* 移动端 post 页面 main 元素 */
@@ -83,7 +88,7 @@ body.is-mobile.is-post-page #body-wrap > main.layout{
 body.is-mobile.is-homepage #page-header,
 body.is-mobile.is-video-page #page-header{height:100vh!important}
 
-/* 移动端侧边栏取消左边距并居中 */
+/* 移动端侧边栏取消左边距 */
 body.is-mobile.is-homepage #body-wrap > main.layout > #aside-content,
 body.is-mobile.is-archives-page #body-wrap > main.layout > #aside-content,
 body.is-mobile.is-tags-page #body-wrap > main.layout > #aside-content,
@@ -93,14 +98,6 @@ body.is-mobile.is-about-page #body-wrap > main.layout > #aside-content{
   flex-direction:column;
   align-items:center;
   width:100%
-}
-
-/* 移动端 card-widget 居中对齐 */
-body.is-mobile.mobile-card-unify .card-widget,
-body.is-mobile.mobile-card-unify .sticky_layout{
-  width:100%!important;
-  max-width:100%!important;
-  box-sizing:border-box
 }
 
 /* 移动端欢迎文字响应式 */
@@ -123,11 +120,22 @@ body.is-mobile .recent-post-item .recent-post-info{padding:16px;width:100%}
 
 /* Cloudflare 节点信息卡片 */
 #colo-info .webinfo{display:flex;flex-direction:column}
-#colo-info .webinfo-item{display:flex;align-items:center;padding:2px 10px 0}
-#colo-info .webinfo-item:first-child{justify-content:space-between}
-#colo-info .webinfo-item:first-child.ip-wrap{flex-direction:column;align-items:flex-start}
-#colo-info .webinfo-item:not(:first-child){justify-content:space-between}
-#colo-info .webinfo-item:first-child .item-name{text-align:left}
-#colo-info .webinfo-item:first-child.ip-wrap .item-count{width:100%;text-align:right}
-#colo-info .webinfo-item .item-name{flex:1;padding-right:20px}
+#colo-info .webinfo-item{display:flex;flex-direction:row;flex-wrap:wrap;align-items:baseline;padding:4px 10px;gap:0 6px}
+#colo-info .webinfo-item .item-name{font-weight:500;flex-shrink:0}
+#colo-info .webinfo-item .item-count{word-break:break-all;flex:1 1 auto;min-width:0}
 #colo-info .item-headline i{animation:fa-flip 2s infinite linear}
+
+/* 移动端 main 内所有框体宽度统一 */
+body.is-mobile.mobile-card-unify #aside-content,
+body.is-mobile.mobile-card-unify #recent-posts{
+  width:100%!important;
+  max-width:100%!important;
+  padding:0!important
+}
+body.is-mobile.mobile-card-unify .card-widget,
+body.is-mobile.mobile-card-unify .sticky_layout,
+body.is-mobile.mobile-card-unify .recent-post-item{
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box
+}
