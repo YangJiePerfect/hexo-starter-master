@@ -1,7 +1,7 @@
 body > .video-wrapper{position:fixed;top:0;left:0;width:100%;height:100%;isolation:isolate;z-index:0;overflow:hidden;background:#0a0a0a;display:none;contain:strict}
 body.is-video-page > .video-wrapper{display:block}
 body > .video-wrapper .header-video-mask{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);z-index:1;pointer-events:none}
-body > .video-wrapper .header-video-bg{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none;filter:none;transition:filter .4s cubic-bezier(.25,.46,.45,.94),transform .4s cubic-bezier(.25,.46,.45,.94);will-change:filter,transform}
+body > .video-wrapper .header-video-bg{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none;filter:none;transition:filter .4s cubic-bezier(.25,.46,.45,.94);will-change:filter}
 body > .video-wrapper .header-video-bg.frosted{filter:blur(4px)}
 body > .video-wrapper .header-welcome{position:absolute;top:0;left:50%;transform:translateX(-50%);width:500px;height:500px;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:2;pointer-events:none}
 body > .video-wrapper .header-welcome .welcome-text{font-size:50px;text-align:center;line-height:1.3;font-weight:400;text-shadow:0 2px 12px rgba(0,0,0,.25);font-family:'ZCOOL KuaiLe','PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(135deg,#ffb3ba,#ffd700,#ff69b4,#ffeaa7,#ffb3ba);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradientShift 3s ease infinite}
@@ -134,5 +134,15 @@ body.is-mobile.mobile-card-unify .recent-post-item{
 }
 
 /* 移动端搜索框缩小 */
-body.is-mobile .search-dialog{width:90vw!important;max-width:400px!important}
+body.is-mobile .search-dialog{
+  top:40px!important;
+  left:40px!important;
+  right:40px!important;
+  bottom:25px!important;
+  width:auto!important;
+  max-width:300px!important;
+  max-height:500px!important;
+  border-radius:28px!important;
+  margin:0 auto!important
+}
 body.is-mobile .search-dialog .local-search-input input{font-size:14px;padding:8px 12px}
