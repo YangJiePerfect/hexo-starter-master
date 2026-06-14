@@ -1,4 +1,4 @@
-body > .video-wrapper{position:fixed;top:0;left:0;width:100%;height:var(--header-video-height,100%);isolation:isolate;z-index:0;overflow:hidden;background:#0a0a0a;display:none;contain:strict}
+body > .video-wrapper{position:fixed;top:0;left:0;width:100%;height:var(--header-video-height,100lvh);min-height:100vh;isolation:isolate;z-index:0;overflow:hidden;background:#0a0a0a;display:none;contain:strict}
 body.is-video-page > .video-wrapper{display:block}
 body > .video-wrapper .header-video-mask{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);z-index:1;pointer-events:none}
 body > .video-wrapper .header-video-bg{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none;filter:none;transform:translateZ(0) scale(1);-webkit-transform:translateZ(0) scale(1);transform-origin:center center;transition:filter .4s cubic-bezier(.25,.46,.45,.94),transform .4s cubic-bezier(.25,.46,.45,.94);will-change:filter,transform}
@@ -14,6 +14,7 @@ body.is-homepage #page-header:before,body.is-video-page #page-header:before{disp
 body.is-homepage #page-header,body.is-video-page.is-homepage #page-header{height:100vh!important}
 body.is-video-page:not(.is-homepage) #page-header{height:100vh!important}
 body{background:transparent!important}
+html,body,#body-wrap{min-height:100%;background:#0a0a0a}
 .is-homepage #body-wrap > main.layout,.is-archives-page #body-wrap > main.layout,.is-tags-page #body-wrap > main.layout,.is-about-page #body-wrap > main.layout{margin-top:calc(-100vh + 400px);margin-left:auto;margin-right:auto;max-width:min(calc(100% - 56px),1200px);padding:38px;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:28px 28px 0 0;position:relative;z-index:1;border:1px solid rgba(255,255,255,.2);contain:layout style paint}
 .is-post-page #body-wrap > main.layout{background:rgba(255,255,255,.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:28px 28px 0 0;position:relative;z-index:1;contain:layout style paint}
 #nav .site-name{font-family:'ZCOOL KuaiLe','PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(135deg,#ffb3ba,#ffd700,#ff69b4,#ffeaa7,#ffb3ba);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradientShift 3s ease infinite}
