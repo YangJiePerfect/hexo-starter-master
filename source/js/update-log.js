@@ -76,7 +76,7 @@
     html += '<div class="update-date">' + latest.date + '</div>'
 
     var count = 0
-    for (var i = 0; i < latest.items.length && count < 8; i++) {
+    for (var i = 0; i < latest.items.length && count < 4; i++) {
       var item = latest.items[i]
       if (!item) continue
       if (skipHeaders[item]) continue
@@ -167,4 +167,9 @@
   } else {
     injectUpdateLogWidget()
   }
+
+  document.addEventListener('pjax:complete', function () {
+    window.__updateLogInjected = false
+    injectUpdateLogWidget()
+  })
 })()
