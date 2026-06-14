@@ -17,7 +17,7 @@ html,body{min-height:100%}
 #body-wrap{min-height:100%}
 .is-homepage html,.is-homepage body{background:#0a0a0a}
 .is-homepage #body-wrap > main.layout,.is-archives-page #body-wrap > main.layout,.is-tags-page #body-wrap > main.layout,.is-about-page #body-wrap > main.layout{margin-top:calc(-100vh + 400px);margin-left:auto;margin-right:auto;max-width:min(calc(100% - 56px),1200px);padding:38px;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:28px 28px 0 0;position:relative;z-index:1;border:1px solid rgba(255,255,255,.2);contain:layout style paint}
-.is-post-page #body-wrap > main.layout{background:rgba(255,255,255,.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:28px 28px 0 0;position:relative;z-index:1;contain:layout style paint}
+.is-post-page #body-wrap > main.layout{background:rgba(255,255,255,.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:28px 28px 0 0;position:relative;z-index:1}
 #nav .site-name{font-family:'ZCOOL KuaiLe','PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(135deg,#ffb3ba,#ffd700,#ff69b4,#ffeaa7,#ffb3ba);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradientShift 3s ease infinite}
 #nav .site-name{font-weight:700;font-size:inherit;letter-spacing:normal}
 @keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}

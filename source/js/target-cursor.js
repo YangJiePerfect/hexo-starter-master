@@ -193,14 +193,23 @@
     var snapMouseY = 0
     var snapStrength = { current: 0 }
     var tickerFn = null
-    var colorSampleEnabled = isArticlePage()
+    var colorSampleEnabled = isArticlePage() && !isDarkMode()
     var lastColorSampleTime = 0
     var isPinkMode = false
     var searchDialogOpen = false
     var searchDialogObserver = null
+    var darkModeObserver = null
+
+    function isDarkMode () {
+      return document.documentElement.getAttribute('data-theme') === 'dark'
+    }
 
     function updateColorSampleEnabled () {
-      colorSampleEnabled = isArticlePage() || searchDialogOpen
+      colorSampleEnabled = (isArticlePage() || searchDialogOpen) && !isDarkMode()
+      if (!colorSampleEnabled && isPinkMode) {
+        isPinkMode = false
+        cursor.classList.remove('target-cursor-pink')
+      }
     }
 
     gsap.set(glow, { xPercent: -50, yPercent: -50 })
@@ -330,6 +339,8 @@
       gsap.killTweensOf(glow)
       clearSnapState()
       gsap.to(ring, {
+        x: 0,
+        y: 0,
         width: ringDefaults.width,
         height: ringDefaults.height,
         borderRadius: ringDefaults.borderRadius,
@@ -583,6 +594,7 @@
     function pjaxCompleteHandler () {
       placeCursorOnTop()
       initSearchDialogObserver()
+      updateColorSampleEnabled()
     }
 
     function initSearchDialogObserver () {
@@ -660,11 +672,27 @@
     startVortex()
     initSearchDialogObserver()
 
+    // 监听深色模式切换
+    if (window.MutationObserver) {
+      darkModeObserver = new MutationObserver(function () {
+        var wasPink = isPinkMode
+        updateColorSampleEnabled()
+        if (wasPink && !isPinkMode) {
+          cursor.classList.remove('target-cursor-pink')
+        }
+      })
+      darkModeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme']
+      })
+    }
+
     window.__targetCursorHexoDestroy = function () {
       if (resumeTimeout) clearTimeout(resumeTimeout)
       if (layerRaf) window.cancelAnimationFrame(layerRaf)
       if (layerObserver) layerObserver.disconnect()
       if (searchDialogObserver) searchDialogObserver.disconnect()
+      if (darkModeObserver) darkModeObserver.disconnect()
       isSnapped = false
       cleanupActiveTarget()
       clearSnapState()
