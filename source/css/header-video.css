@@ -13,8 +13,9 @@ body.is-homepage #page-header,body.is-video-page #page-header{background-color:t
 body.is-homepage #page-header:before,body.is-video-page #page-header:before{display:none!important}
 body.is-homepage #page-header,body.is-video-page.is-homepage #page-header{height:100vh!important}
 body.is-video-page:not(.is-homepage) #page-header{height:100vh!important}
-body{background:transparent!important}
-html,body,#body-wrap{min-height:100%;background:#0a0a0a}
+html,body{min-height:100%}
+#body-wrap{min-height:100%}
+.is-homepage html,.is-homepage body{background:#0a0a0a}
 .is-homepage #body-wrap > main.layout,.is-archives-page #body-wrap > main.layout,.is-tags-page #body-wrap > main.layout,.is-about-page #body-wrap > main.layout{margin-top:calc(-100vh + 400px);margin-left:auto;margin-right:auto;max-width:min(calc(100% - 56px),1200px);padding:38px;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:28px 28px 0 0;position:relative;z-index:1;border:1px solid rgba(255,255,255,.2);contain:layout style paint}
 .is-post-page #body-wrap > main.layout{background:rgba(255,255,255,.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:28px 28px 0 0;position:relative;z-index:1;contain:layout style paint}
 #nav .site-name{font-family:'ZCOOL KuaiLe','PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(135deg,#ffb3ba,#ffd700,#ff69b4,#ffeaa7,#ffb3ba);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradientShift 3s ease infinite}
@@ -247,4 +248,90 @@ body.is-mobile #update-log .update-log-hint{font-size:11px}
 [data-theme='dark'] body.is-mobile.is-post-page #body-wrap > main.layout {
   background: rgba(18, 18, 18, .55);
   border-color: rgba(255, 255, 255, .08)
+}
+
+/* ========== 全局暗色模式适配 ========== */
+
+/* 页面底层背景 */
+[data-theme='dark'] html,
+[data-theme='dark'] body {
+  background: #0a0a0a
+}
+
+/* 页脚 */
+[data-theme='dark'] #footer {
+  background-color: #1a1a2e;
+  background-image: none
+}
+
+/* 页面头部 fallback 背景 */
+[data-theme='dark'] #page-header {
+  background-color: #1a1a2e
+}
+
+/* 文章页内容区文字 */
+[data-theme='dark'] #article-container {
+  color: rgba(255, 255, 255, .85)
+}
+
+/* 文章版权声明 */
+[data-theme='dark'] #post .post-copyright {
+  border-color: rgba(255, 255, 255, .15)
+}
+[data-theme='dark'] #post .post-copyright:before {
+  color: var(--lyx-theme, #3b8cff)
+}
+[data-theme='dark'] #post .post-copyright .post-copyright-meta {
+  color: var(--lyx-theme, #3b8cff)
+}
+[data-theme='dark'] #post .post-copyright:hover {
+  -webkit-box-shadow: 0 0 8px 0 rgba(0, 0, 0, .3), 0 2px 4px 0 rgba(0, 0, 0, .2);
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, .3), 0 2px 4px 0 rgba(0, 0, 0, .2)
+}
+
+/* 文章上一篇/下一篇分页 */
+[data-theme='dark'] .pagination-related {
+  background: #1a1a1a
+}
+
+/* 搜索弹窗输入框 */
+[data-theme='dark'] .search-dialog input {
+  background: rgba(255, 255, 255, .08);
+  color: rgba(255, 255, 255, .85)
+}
+
+/* 归档页文章项 */
+[data-theme='dark'] .article-sort-item:hover {
+  background: rgba(255, 255, 255, .04)
+}
+
+/* 标签页 */
+[data-theme='dark'] .tag-cloud-list a {
+  background: rgba(255, 255, 255, .06);
+  color: rgba(255, 255, 255, .75)
+}
+[data-theme='dark'] .tag-cloud-list a:hover {
+  background: rgba(255, 255, 255, .12)
+}
+
+/* 归档页内容区 */
+[data-theme='dark'] #archive {
+  background: rgba(30, 30, 30, .45);
+  border-radius: 8px;
+  padding: 20px
+}
+
+/* 关于/标签页内容区 */
+[data-theme='dark'] #page {
+  background: rgba(30, 30, 30, .45);
+  border-radius: 8px;
+  padding: 20px
+}
+
+/* 文章详情页内容区 */
+[data-theme='dark'] #post {
+  background: rgba(30, 30, 30, .45);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px
 }
