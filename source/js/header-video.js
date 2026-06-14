@@ -1,28 +1,395 @@
-(function(){
-var BLUR_TARGET_FPS=30;var blurFrameCount=0;var blurFrameInterval=Math.round(60/Math.max(BLUR_TARGET_FPS,1));var blurCooldownUntil=0;
-function shouldUpdateBlur(){blurFrameCount++;if(blurFrameCount>=blurFrameInterval){blurFrameCount=0;return true}return false}
-function detectDeviceType(){var ua=(navigator.userAgent||'').toLowerCase();var isIPad=/ipad/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1&&!window.MSStream);if(isIPad)return'pc';var mobileRegex=/android|webos|iphone|ipod|blackberry|iemobile|opera mini/i;if(mobileRegex.test(ua))return'mobile';var hasTouch='ontouchstart' in window||navigator.maxTouchPoints>0;var isSmallScreen=window.innerWidth<=768;if(hasTouch&&isSmallScreen)return'mobile';return'pc'}
-function isPostPage(){return /\/\d{4}\/\d{2}\/\d{2}\//.test(window.location.pathname)}
-function isVideoPage(){var p=window.location.pathname;return p==='/'||p==='/archives/'||p==='/archives'||/^\/archives\/\d{4}\/\d{2}\//.test(p)||p==='/tags/'||p==='/tags'||p==='/about/'||p==='/about'}
-function isVideoPageUrl(pathname){var p=pathname.replace(/\/$/,'')||'/';return p==='/'||p==='/archives'||/^\/archives\/\d{4}\/\d{2}/.test(p)||p==='/tags'||p==='/about'}
-function getWelcomeText(){var pathname=window.location.pathname;if(/^\/archives\/\d{4}\/\d{2}\//.test(pathname))return{main:'月度归档',sub:'一月一回首，一步一安然'};if(pathname==='/archives/'||pathname==='/archives')return{main:'总归档',sub:'时光知味，岁月沉香'};if(pathname==='/tags/'||pathname==='/tags')return{main:'标签',sub:'春有百花秋有月, 夏有凉风冬有雪'};if(pathname==='/about/'||pathname==='/about')return{main:'关于',sub:'世界上只有一种英雄主义，就是看清生活的真相之后依然热爱生活'};return{main:'阳介的小站',sub:'春有百花秋有月, 夏有凉风冬有雪'}}
-function updateWelcomeText(){var wrapper=document.querySelector('body > .video-wrapper');if(!wrapper)return;var wt=wrapper.querySelector('.welcome-text');var pt=wrapper.querySelector('.poem-text');if(!wt||!pt)return;var t=getWelcomeText();wt.textContent=t.main;pt.textContent=t.sub}
-function ensureVideoWrapper(){if(document.querySelector('body > .video-wrapper'))return;var w=document.createElement('div');w.className='video-wrapper';var v=document.createElement('video');v.className='header-video-bg';v.src='/header-bg.webm';v.autoplay=true;v.loop=true;v.muted=true;v.playsInline=true;v.setAttribute('playsinline','');v.setAttribute('preload','auto');v.setAttribute('disableRemotePlayback','');w.appendChild(v);w.appendChild(Object.assign(document.createElement('div'),{className:'header-video-mask'}));var welcome=document.createElement('div');welcome.className='header-welcome';welcome.innerHTML='<div class="welcome-text"></div><div class="poem-text"></div>';w.appendChild(welcome);document.body.appendChild(w)}
-function updateVideoVisibility(){var video=isVideoPage();document.body.classList.toggle('is-video-page',video);updateWelcomeText();var header=document.getElementById('page-header');if(header){header.classList.toggle('video-page',video)}}
-function getFrostedTriggerElement(){return document.querySelector('#body-wrap > main.layout')||document.querySelector('#content-inner')||document.querySelector('main#content')}
-function setStableVideoHeight(force){var wrapper=document.querySelector('body > .video-wrapper');if(!wrapper)return;if(!document.body.classList.contains('is-mobile')){wrapper.style.removeProperty('--header-video-height');return}var current=wrapper.style.getPropertyValue('--header-video-height');if(current&&!force)return;var h=window.innerHeight||document.documentElement.clientHeight||0;if(window.visualViewport&&window.visualViewport.height)h=Math.max(h,window.visualViewport.height);if(window.screen&&window.screen.height)h=Math.max(h,window.screen.height);if(h>0)wrapper.style.setProperty('--header-video-height',Math.round(h+96)+'px')}
-function initScrollDetector(){var triggerEl=getFrostedTriggerElement();if(!triggerEl)return;var headerVideo=document.querySelector('body > .video-wrapper .header-video-bg');var welcomeEl=document.querySelector('body > .video-wrapper .header-welcome');var blurTicking=false,parallaxTicking=false;function updateBlur(){blurTicking=false;var now=Date.now();if(now<blurCooldownUntil){if(headerVideo)headerVideo.classList.remove('frosted');return}if(!shouldUpdateBlur())return;var rect=triggerEl.getBoundingClientRect();if(headerVideo)headerVideo.classList.toggle('frosted',rect.top<=0)}function updateParallax(){parallaxTicking=false;if(!welcomeEl)return;var scrollY=window.scrollY||window.pageYOffset;var parallax=scrollY*-0.35;if(document.body.classList.contains('is-mobile')){welcomeEl.style.transform='translate(-50%,calc(-50% + '+parallax+'px))'}else{welcomeEl.style.transform='translateX(-50%) translateY('+parallax+'px)'}}function onScrollBlur(){if(!blurTicking){blurTicking=true;requestAnimationFrame(updateBlur)}}function onScrollParallax(){if(!parallaxTicking){parallaxTicking=true;requestAnimationFrame(updateParallax)}}if(window.frostedScrollHandler)window.removeEventListener('scroll',window.frostedScrollHandler,{passive:true});if(window.parallaxScrollHandler)window.removeEventListener('scroll',window.parallaxScrollHandler,{passive:true});window.frostedScrollHandler=onScrollBlur;window.parallaxScrollHandler=onScrollParallax;window.addEventListener('scroll',onScrollBlur,{passive:true});window.addEventListener('scroll',onScrollParallax,{passive:true});requestAnimationFrame(updateBlur)}
-function injectMailButton(){if(document.querySelector('#card-mail-btn'))return;var cardInfoBtn=document.getElementById('card-info-btn');if(!cardInfoBtn)return;var mailBtn=document.createElement('a');mailBtn.id='card-mail-btn';mailBtn.target='_blank';mailBtn.rel='noopener';mailBtn.href='https://mymailbox.yangjie520.ccwu.cc/';mailBtn.innerHTML='<i class="fas fa-envelope"></i><span>阳介的邮箱小站</span>';cardInfoBtn.parentNode.insertBefore(mailBtn,cardInfoBtn.nextSibling)}
-function reorderFooter(){var frameworkInfo=document.querySelector('.footer-copyright .framework-info');var customText=document.querySelector('.footer_custom_text');if(!frameworkInfo||!customText)return;customText.parentNode.insertBefore(frameworkInfo,customText.nextSibling)}
-function setupNavClickInterceptor(){document.addEventListener('click',function(e){var link=e.target.closest('#menus a, #nav a[href]');if(!link)return;var href=link.getAttribute('href');if(!href||href.startsWith('#')||href.startsWith('http'))return;var norm=function(p){return p==='/'?p:p.replace(/\/+$/,'')};if(norm(window.location.pathname)===norm(href)){e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();var target=document.getElementById('content-inner')||document.querySelector('main#content');if(target){var pos=target.getBoundingClientRect().top+window.scrollY;var nav=document.getElementById('page-header');if(nav&&nav.classList.contains('fixed'))pos=pos-(nav.offsetHeight||60);window.scrollTo({top:pos,behavior:'smooth'})}else{window.scrollTo({top:0,behavior:'smooth'})}}},true)}
-function setupPjaxTransition(){var pendingUrl=null;document.addEventListener('click',function(e){var link=e.target.closest('a[href]');if(!link)return;var href=link.getAttribute('href');if(href&&href.startsWith('/')&&!href.startsWith('//')&&href.indexOf('#')===-1)pendingUrl=href},true);document.addEventListener('pjax:send',function(){blurCooldownUntil=Date.now()+500;var hv=document.querySelector('body > .video-wrapper .header-video-bg');if(hv)hv.classList.remove('frosted');if(pendingUrl)document.body.classList.toggle('is-video-page',isVideoPageUrl(pendingUrl))});document.addEventListener('pjax:complete',function(){pendingUrl=null;blurCooldownUntil=Date.now()+300;window.scrollTo(0,0);var nav=document.getElementById('nav');if(nav){nav.style.opacity='0';nav.style.transform='translateY(-35px)';requestAnimationFrame(function(){requestAnimationFrame(function(){var a=nav.animate([{transform:'translateY(-35px)',opacity:'0'},{transform:'translateY(0)',opacity:'1'}],{duration:500,easing:'ease',fill:'forwards'});a.onfinish=function(){nav.style.opacity='';nav.style.transform=''}})})}})}
-function updatePageType(){var header=document.getElementById('page-header');if(!header)return;var p=window.location.pathname;var isHomepage=p==='/'||p==='/index.html';var isMonthlyArchive=/^\/archives\/\d{4}\/\d{2}\//.test(p);var isArchiveIndex=p==='/archives/'||p==='/archives';var isTagsPage=p==='/tags/'||p==='/tags';var isAboutPage=p==='/about/'||p==='/about';var cl=document.body.classList;cl.toggle('is-homepage',isHomepage);cl.toggle('is-post-page',header.classList.contains('post-bg'));cl.toggle('is-archives-page',isArchiveIndex||isMonthlyArchive);cl.toggle('is-tags-page',isTagsPage);cl.toggle('is-about-page',isAboutPage);updateVideoVisibility()}
-function initMobile(){var deviceType=detectDeviceType();var isMobile=deviceType==='mobile';document.body.classList.toggle('is-mobile',isMobile);document.body.classList.toggle('is-pc',!isMobile);if(isMobile){var targetCursor=document.querySelector('.target-cursor-wrapper');if(targetCursor)targetCursor.style.display='none';document.documentElement.classList.remove('target-cursor-enabled');document.documentElement.classList.add('target-cursor-disabled');if(window.TargetCursorController&&window.TargetCursorController.isEnabled())window.TargetCursorController.disable();if(!isPostPage()){document.body.classList.add('mobile-card-unify')}}setStableVideoHeight(false)}
-function init(){ensureVideoWrapper();updatePageType();initMobile();initScrollDetector();injectMailButton();reorderFooter();setupNavClickInterceptor()}
-function onVisibilityChange(){var video=document.querySelector('body > .video-wrapper .header-video-bg');if(!video)return;if(document.hidden)video.pause();else video.play().catch(function(){})}
-blurCooldownUntil=Date.now()+500;setupPjaxTransition();
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-document.addEventListener('pjax:complete',function(){updatePageType();initMobile();initScrollDetector();injectMailButton();reorderFooter()});
-window.addEventListener('orientationchange',function(){setTimeout(function(){setStableVideoHeight(true);if(window.frostedScrollHandler)window.frostedScrollHandler()},300)},{passive:true});
-window.addEventListener('resize',function(){if(!document.body.classList.contains('is-mobile'))setStableVideoHeight(true)},{passive:true});
-document.addEventListener('visibilitychange',onVisibilityChange)})();
+(function () {
+  var BLUR_TARGET_FPS = 30
+  var blurFrameCount = 0
+  var blurFrameInterval = Math.round(60 / Math.max(BLUR_TARGET_FPS, 1))
+  var blurCooldownUntil = 0
+
+  function shouldUpdateBlur () {
+    blurFrameCount++
+    if (blurFrameCount >= blurFrameInterval) {
+      blurFrameCount = 0
+      return true
+    }
+    return false
+  }
+
+  function detectDeviceType () {
+    var ua = (navigator.userAgent || '').toLowerCase()
+    var isIPad = /ipad/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1 && !window.MSStream)
+    if (isIPad) return 'pc'
+
+    var mobileRegex = /android|webos|iphone|ipod|blackberry|iemobile|opera mini/i
+    if (mobileRegex.test(ua)) return 'mobile'
+
+    var hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    var isSmallScreen = window.innerWidth <= 768
+    if (hasTouch && isSmallScreen) return 'mobile'
+
+    return 'pc'
+  }
+
+  function isPostPage () {
+    return /\/\d{4}\/\d{2}\/\d{2}\//.test(window.location.pathname)
+  }
+
+  function isVideoPage () {
+    var p = window.location.pathname
+    return p === '/' || p === '/archives/' || p === '/archives' ||
+      /^\/archives\/\d{4}\/\d{2}\//.test(p) ||
+      p === '/tags/' || p === '/tags' ||
+      p === '/about/' || p === '/about'
+  }
+
+  function isVideoPageUrl (pathname) {
+    var p = pathname.replace(/\/$/, '') || '/'
+    return p === '/' || p === '/archives' ||
+      /^\/archives\/\d{4}\/\d{2}/.test(p) ||
+      p === '/tags' || p === '/about'
+  }
+
+  function getWelcomeText () {
+    var pathname = window.location.pathname
+    if (/^\/archives\/\d{4}\/\d{2}\//.test(pathname)) {
+      return { main: '月度归档', sub: '一月一回首，一步一安然' }
+    }
+    if (pathname === '/archives/' || pathname === '/archives') {
+      return { main: '总归档', sub: '时光知味，岁月沉香' }
+    }
+    if (pathname === '/tags/' || pathname === '/tags') {
+      return { main: '标签', sub: '春有百花秋有月, 夏有凉风冬有雪' }
+    }
+    if (pathname === '/about/' || pathname === '/about') {
+      return { main: '关于', sub: '世界上只有一种英雄主义，就是看清生活的真相之后依然热爱生活' }
+    }
+    return { main: '阳介的小站', sub: '春有百花秋有月, 夏有凉风冬有雪' }
+  }
+
+  function updateWelcomeText () {
+    var wrapper = document.querySelector('body > .video-wrapper')
+    if (!wrapper) return
+    var wt = wrapper.querySelector('.welcome-text')
+    var pt = wrapper.querySelector('.poem-text')
+    if (!wt || !pt) return
+    var t = getWelcomeText()
+    wt.textContent = t.main
+    pt.textContent = t.sub
+  }
+
+  function ensureVideoWrapper () {
+    if (document.querySelector('body > .video-wrapper')) return
+
+    var w = document.createElement('div')
+    w.className = 'video-wrapper'
+
+    var v = document.createElement('video')
+    v.className = 'header-video-bg'
+    v.src = '/header-bg.webm'
+    v.autoplay = true
+    v.loop = true
+    v.muted = true
+    v.playsInline = true
+    v.setAttribute('playsinline', '')
+    v.setAttribute('preload', 'auto')
+    v.setAttribute('disableRemotePlayback', '')
+    w.appendChild(v)
+
+    w.appendChild(Object.assign(document.createElement('div'), { className: 'header-video-mask' }))
+
+    var welcome = document.createElement('div')
+    welcome.className = 'header-welcome'
+    welcome.innerHTML = '<div class="welcome-text"></div><div class="poem-text"></div>'
+    w.appendChild(welcome)
+
+    document.body.appendChild(w)
+  }
+
+  function updateVideoVisibility () {
+    var video = isVideoPage()
+    document.body.classList.toggle('is-video-page', video)
+    updateWelcomeText()
+    var header = document.getElementById('page-header')
+    if (header) {
+      header.classList.toggle('video-page', video)
+    }
+  }
+
+  function getFrostedTriggerElement () {
+    return document.querySelector('#body-wrap > main.layout') ||
+      document.querySelector('#content-inner') ||
+      document.querySelector('main#content')
+  }
+
+  function setStableVideoHeight (force) {
+    var wrapper = document.querySelector('body > .video-wrapper')
+    if (!wrapper) return
+
+    if (!document.body.classList.contains('is-mobile')) {
+      wrapper.style.removeProperty('--header-video-height')
+      return
+    }
+
+    var current = wrapper.style.getPropertyValue('--header-video-height')
+    if (current && !force) return
+
+    var h = window.innerHeight || document.documentElement.clientHeight || 0
+    if (window.visualViewport && window.visualViewport.height) {
+      h = Math.max(h, window.visualViewport.height)
+    }
+    if (window.screen && window.screen.height) {
+      h = Math.max(h, window.screen.height)
+    }
+    if (h > 0) {
+      wrapper.style.setProperty('--header-video-height', Math.round(h + 96) + 'px')
+    }
+  }
+
+  function initScrollDetector () {
+    var triggerEl = getFrostedTriggerElement()
+    if (!triggerEl) return
+
+    var headerVideo = document.querySelector('body > .video-wrapper .header-video-bg')
+    var welcomeEl = document.querySelector('body > .video-wrapper .header-welcome')
+    var blurTicking = false
+    var parallaxTicking = false
+
+    function updateBlur () {
+      blurTicking = false
+      var now = Date.now()
+      if (now < blurCooldownUntil) {
+        if (headerVideo) headerVideo.classList.remove('frosted')
+        return
+      }
+      if (!shouldUpdateBlur()) return
+      var rect = triggerEl.getBoundingClientRect()
+      if (headerVideo) headerVideo.classList.toggle('frosted', rect.top <= 0)
+    }
+
+    function updateParallax () {
+      parallaxTicking = false
+      if (!welcomeEl) return
+      var scrollY = window.scrollY || window.pageYOffset
+      var parallax = scrollY * -0.35
+      if (document.body.classList.contains('is-mobile')) {
+        welcomeEl.style.transform = 'translate(-50%,calc(-50% + ' + parallax + 'px))'
+      } else {
+        welcomeEl.style.transform = 'translateX(-50%) translateY(' + parallax + 'px)'
+      }
+    }
+
+    function onScrollBlur () {
+      if (!blurTicking) {
+        blurTicking = true
+        requestAnimationFrame(updateBlur)
+      }
+    }
+
+    function onScrollParallax () {
+      if (!parallaxTicking) {
+        parallaxTicking = true
+        requestAnimationFrame(updateParallax)
+      }
+    }
+
+    if (window.frostedScrollHandler) {
+      window.removeEventListener('scroll', window.frostedScrollHandler, { passive: true })
+    }
+    if (window.parallaxScrollHandler) {
+      window.removeEventListener('scroll', window.parallaxScrollHandler, { passive: true })
+    }
+
+    window.frostedScrollHandler = onScrollBlur
+    window.parallaxScrollHandler = onScrollParallax
+    window.addEventListener('scroll', onScrollBlur, { passive: true })
+    window.addEventListener('scroll', onScrollParallax, { passive: true })
+    requestAnimationFrame(updateBlur)
+  }
+
+  function injectMailButton () {
+    if (document.querySelector('#card-mail-btn')) return
+    var cardInfoBtn = document.getElementById('card-info-btn')
+    if (!cardInfoBtn) return
+
+    var mailBtn = document.createElement('a')
+    mailBtn.id = 'card-mail-btn'
+    mailBtn.target = '_blank'
+    mailBtn.rel = 'noopener'
+    mailBtn.href = 'https://mymailbox.yangjie520.ccwu.cc/'
+    mailBtn.innerHTML = '<i class="fas fa-envelope"></i><span>阳介的邮箱小站</span>'
+    cardInfoBtn.parentNode.insertBefore(mailBtn, cardInfoBtn.nextSibling)
+  }
+
+  function reorderFooter () {
+    var frameworkInfo = document.querySelector('.footer-copyright .framework-info')
+    var customText = document.querySelector('.footer_custom_text')
+    if (!frameworkInfo || !customText) return
+    customText.parentNode.insertBefore(frameworkInfo, customText.nextSibling)
+  }
+
+  function setupNavClickInterceptor () {
+    document.addEventListener('click', function (e) {
+      var link = e.target.closest('#menus a, #nav a[href]')
+      if (!link) return
+      var href = link.getAttribute('href')
+      if (!href || href.startsWith('#') || href.startsWith('http')) return
+
+      var norm = function (p) {
+        return p === '/' ? p : p.replace(/\/+$/, '')
+      }
+      if (norm(window.location.pathname) === norm(href)) {
+        e.preventDefault()
+        e.stopImmediatePropagation()
+        e.stopPropagation()
+        var target = document.getElementById('content-inner') || document.querySelector('main#content')
+        if (target) {
+          var pos = target.getBoundingClientRect().top + window.scrollY
+          var nav = document.getElementById('page-header')
+          if (nav && nav.classList.contains('fixed')) {
+            pos = pos - (nav.offsetHeight || 60)
+          }
+          window.scrollTo({ top: pos, behavior: 'smooth' })
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+      }
+    }, true)
+  }
+
+  function setupPjaxTransition () {
+    var pendingUrl = null
+
+    document.addEventListener('click', function (e) {
+      var link = e.target.closest('a[href]')
+      if (!link) return
+      var href = link.getAttribute('href')
+      if (href && href.startsWith('/') && !href.startsWith('//') && href.indexOf('#') === -1) {
+        pendingUrl = href
+      }
+    }, true)
+
+    document.addEventListener('pjax:send', function () {
+      blurCooldownUntil = Date.now() + 500
+      var hv = document.querySelector('body > .video-wrapper .header-video-bg')
+      if (hv) hv.classList.remove('frosted')
+      if (pendingUrl) document.body.classList.toggle('is-video-page', isVideoPageUrl(pendingUrl))
+    })
+
+    document.addEventListener('pjax:complete', function () {
+      pendingUrl = null
+      blurCooldownUntil = Date.now() + 300
+      window.scrollTo(0, 0)
+
+      var nav = document.getElementById('nav')
+      if (nav) {
+        nav.style.opacity = '0'
+        nav.style.transform = 'translateY(-35px)'
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            var a = nav.animate([
+              { transform: 'translateY(-35px)', opacity: '0' },
+              { transform: 'translateY(0)', opacity: '1' }
+            ], { duration: 500, easing: 'ease', fill: 'forwards' })
+            a.onfinish = function () {
+              nav.style.opacity = ''
+              nav.style.transform = ''
+            }
+          })
+        })
+      }
+    })
+  }
+
+  function updatePageType () {
+    var header = document.getElementById('page-header')
+    if (!header) return
+
+    var p = window.location.pathname
+    var isHomepage = p === '/' || p === '/index.html'
+    var isMonthlyArchive = /^\/archives\/\d{4}\/\d{2}\//.test(p)
+    var isArchiveIndex = p === '/archives/' || p === '/archives'
+    var isTagsPage = p === '/tags/' || p === '/tags'
+    var isAboutPage = p === '/about/' || p === '/about'
+
+    var cl = document.body.classList
+    cl.toggle('is-homepage', isHomepage)
+    cl.toggle('is-post-page', header.classList.contains('post-bg'))
+    cl.toggle('is-archives-page', isArchiveIndex || isMonthlyArchive)
+    cl.toggle('is-tags-page', isTagsPage)
+    cl.toggle('is-about-page', isAboutPage)
+
+    updateVideoVisibility()
+  }
+
+  function initMobile () {
+    var deviceType = detectDeviceType()
+    var isMobile = deviceType === 'mobile'
+    document.body.classList.toggle('is-mobile', isMobile)
+    document.body.classList.toggle('is-pc', !isMobile)
+
+    if (isMobile) {
+      var targetCursor = document.querySelector('.target-cursor-wrapper')
+      if (targetCursor) targetCursor.style.display = 'none'
+      document.documentElement.classList.remove('target-cursor-enabled')
+      document.documentElement.classList.add('target-cursor-disabled')
+      if (window.TargetCursorController && window.TargetCursorController.isEnabled()) {
+        window.TargetCursorController.disable()
+      }
+      if (!isPostPage()) {
+        document.body.classList.add('mobile-card-unify')
+      }
+    }
+
+    setStableVideoHeight(false)
+  }
+
+  function init () {
+    ensureVideoWrapper()
+    updatePageType()
+    initMobile()
+    initScrollDetector()
+    injectMailButton()
+    reorderFooter()
+    setupNavClickInterceptor()
+  }
+
+  function onVisibilityChange () {
+    var video = document.querySelector('body > .video-wrapper .header-video-bg')
+    if (!video) return
+    if (document.hidden) {
+      video.pause()
+    } else {
+      video.play().catch(function () {})
+    }
+  }
+
+  blurCooldownUntil = Date.now() + 500
+  setupPjaxTransition()
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init)
+  } else {
+    init()
+  }
+
+  document.addEventListener('pjax:complete', function () {
+    updatePageType()
+    initMobile()
+    initScrollDetector()
+    injectMailButton()
+    reorderFooter()
+  })
+
+  window.addEventListener('orientationchange', function () {
+    setTimeout(function () {
+      setStableVideoHeight(true)
+      if (window.frostedScrollHandler) window.frostedScrollHandler()
+    }, 300)
+  }, { passive: true })
+
+  window.addEventListener('resize', function () {
+    if (!document.body.classList.contains('is-mobile')) {
+      setStableVideoHeight(true)
+    }
+  }, { passive: true })
+
+  document.addEventListener('visibilitychange', onVisibilityChange)
+})()

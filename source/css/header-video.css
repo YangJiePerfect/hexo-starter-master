@@ -147,3 +147,104 @@ body.is-mobile .search-dialog{
   margin:0 auto!important
 }
 body.is-mobile .search-dialog .local-search-input input{font-size:14px;padding:8px 12px}
+
+/* 更新日志卡片 */
+#update-log{cursor:pointer;transition:transform .2s,box-shadow .2s}
+#update-log:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.1)}
+#update-log .item-headline i{color:var(--theme-color,#3b82f6)}
+#update-log .update-log-preview .update-version{font-size:15px;font-weight:600;color:var(--font-color,#333);margin-bottom:4px}
+#update-log .update-log-preview .update-date{font-size:12px;color:var(--grey,#999);margin-bottom:6px}
+#update-log .update-log-preview .update-item{font-size:13px;color:var(--font-color,#555);padding:2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#update-log .update-log-hint{font-size:12px;color:var(--grey,#aaa);margin-top:6px;display:flex;align-items:center;justify-content:flex-end;gap:2px;padding:4px 12px 4px 8px;border-radius:6px;cursor:pointer;transition:background .2s,color .2s;float:right;clear:both}
+#update-log .update-log-hint:hover{background:rgba(0,0,0,.05);color:var(--theme-color,#3b82f6)}
+#update-log .update-log-hint i{font-size:10px}
+
+/* 更新日志弹窗 */
+.update-log-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1001;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.4);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
+.update-log-overlay.open{opacity:1;visibility:visible}
+.update-log-modal{background:rgba(255,255,255,.8);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border-radius:20px;border:1px solid rgba(255,255,255,.3);box-shadow:0 16px 48px rgba(0,0,0,.2);width:90vw;max-width:600px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;transform:scale(.95);transition:transform .3s}
+.update-log-overlay.open .update-log-modal{transform:scale(1)}
+.update-log-modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(0,0,0,.08);flex-shrink:0}
+.update-log-modal-header span{font-size:18px;font-weight:600;color:var(--font-color,#333)}
+.update-log-close{width:32px;height:32px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:8px;color:var(--grey,#555);transition:background .2s,color .2s;font-size:16px}
+.update-log-close:hover{background:rgba(0,0,0,.06);color:var(--font-color,#333)}
+.update-log-modal-body{flex:1;overflow-y:auto;padding:16px 20px 20px}
+.update-log-version-block{margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(0,0,0,.06)}
+.update-log-version-block:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.update-log-version-title{font-size:16px;font-weight:700;color:var(--theme-color,#3b82f6);margin-bottom:2px}
+.update-log-version-date{font-size:12px;color:var(--grey,#999);margin-bottom:8px}
+.update-log-version-item{font-size:14px;color:var(--font-color,#555);padding:3px 0;line-height:1.6}
+
+/* 移动端 */
+body.is-mobile .update-log-modal{width:calc(100vw - 32px);max-width:calc(100vw - 32px);max-height:85vh;border-radius:16px;margin:0 16px}
+body.is-mobile .update-log-modal-header{padding:14px 16px}
+body.is-mobile .update-log-modal-header span{font-size:16px}
+body.is-mobile .update-log-modal-body{padding:12px 16px 16px}
+body.is-mobile .update-log-version-title{font-size:14px}
+body.is-mobile .update-log-version-item{font-size:13px}
+body.is-mobile #update-log .update-log-preview .update-item{font-size:12px}
+body.is-mobile #update-log .update-log-hint{font-size:11px}
+
+/* ========== 暗色模式高斯模糊适配 ========== */
+
+/* PC 端 main 布局 */
+[data-theme='dark'].is-homepage #body-wrap > main.layout,
+[data-theme='dark'].is-archives-page #body-wrap > main.layout,
+[data-theme='dark'].is-tags-page #body-wrap > main.layout,
+[data-theme='dark'].is-about-page #body-wrap > main.layout {
+  background: rgba(18, 18, 18, .55)
+}
+[data-theme='dark'].is-post-page #body-wrap > main.layout {
+  background: rgba(18, 18, 18, .55)
+}
+
+/* PC 端卡片和文章列表项 */
+[data-theme='dark'] .recent-post-item,
+[data-theme='dark'] .card-widget {
+  background: rgba(30, 30, 30, .75) !important;
+  border-color: rgba(255, 255, 255, .08)
+}
+
+/* PC 端搜索框 */
+[data-theme='dark'] .search-dialog {
+  background: rgba(30, 30, 30, .85) !important;
+  border-color: rgba(255, 255, 255, .1)
+}
+
+/* PC 端更新日志弹窗 */
+[data-theme='dark'] .update-log-modal {
+  background: rgba(30, 30, 30, .8);
+  border-color: rgba(255, 255, 255, .08)
+}
+[data-theme='dark'] .update-log-modal-header {
+  border-bottom-color: rgba(255, 255, 255, .08)
+}
+[data-theme='dark'] .update-log-version-block {
+  border-bottom-color: rgba(255, 255, 255, .06)
+}
+[data-theme='dark'] .update-log-close:hover {
+  background: rgba(255, 255, 255, .08);
+  color: var(--font-color, #ccc)
+}
+[data-theme='dark'] #update-log .update-log-hint:hover {
+  background: rgba(255, 255, 255, .06)
+}
+
+/* 暗色模式 nav 高斯模糊遮罩 */
+[data-theme='dark'] #page-header #nav::before {
+  backdrop-filter: blur(5px) brightness(.5);
+  -webkit-backdrop-filter: blur(5px) brightness(.5)
+}
+
+/* 暗色模式移动端 main 布局 */
+[data-theme='dark'] body.is-mobile.is-homepage #body-wrap > main.layout,
+[data-theme='dark'] body.is-mobile.is-archives-page #body-wrap > main.layout,
+[data-theme='dark'] body.is-mobile.is-tags-page #body-wrap > main.layout,
+[data-theme='dark'] body.is-mobile.is-about-page #body-wrap > main.layout {
+  background: rgba(18, 18, 18, .55);
+  border-color: rgba(255, 255, 255, .08)
+}
+[data-theme='dark'] body.is-mobile.is-post-page #body-wrap > main.layout {
+  background: rgba(18, 18, 18, .55);
+  border-color: rgba(255, 255, 255, .08)
+}

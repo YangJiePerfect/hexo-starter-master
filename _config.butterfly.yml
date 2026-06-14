@@ -132,14 +132,17 @@ inject:
     - <script src="/js/header-video.js"></script>
     - <script src="/js/target-cursor.js"></script>
     - <script src="/js/colo-info.js"></script>
+    - <script src="/js/update-log.js"></script>
     - <script src="/js/cursor-toggle.js"></script>
-    - <script>document.addEventListener('DOMContentLoaded',function(){var hide=document.getElementById('rightside-config-hide');if(hide&&!document.getElementById('cursor-toggle')){var btn=document.createElement('button');btn.id='cursor-toggle';btn.type='button';btn.title='切换鼠标特效';btn.setAttribute('aria-pressed','true');btn.innerHTML='<i class="fas fa-mouse-pointer"></i>';hide.appendChild(btn)}})</script>
 
 # 作者卡片
 aside:
   card_author:
     button:
       link: https://github.com/YangJiePerfect
+  card_announcement:
+    enable: true
+    content: 欢迎来到阳介的小站喵~o( =∩ω∩= )m<br>本站长为新人站长,若网站有bug等问题请谅解喵~<br>若有内容侵权或违反法律请及时联系站长，谢谢喵~
 
 # 页脚
 footer:
