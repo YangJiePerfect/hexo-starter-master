@@ -4,7 +4,7 @@
   window.__targetCursorHexoLoaded = false
 
   var config = Object.assign({
-    targetSelector: '#article-container img, #article-container a:not([data-fancybox]):not([href^="mailto:"]), #nav a, #aside-content a:not(.thumbnail):not(.title), #aside-content .aside-list-item, button, .cursor-target, .article-title, .recent-post-info .content, .update-log-hint',
+    targetSelector: '#article-container img, #article-container a:not([data-fancybox]):not([href^="mailto:"]), #nav a, #nav span.site-page, #aside-content a:not(.thumbnail):not(.title), #aside-content .aside-list-item, button, .cursor-target, .article-title, .recent-post-info .content, .update-log-hint',
     spinDuration: 3,
     hoverDuration: 0.2,
     targetGap: 8,
