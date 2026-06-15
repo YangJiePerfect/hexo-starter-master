@@ -79,7 +79,7 @@ function handleVisibilityChange() {
 }
 
 // 初始化
-document.addEventListener('DOMContentLoaded', function () {
+function initTabAway () {
     // 保存原始图标
     initOriginalIcon();
 
@@ -95,7 +95,13 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('beforeunload', function () {
         clearTimeout(awayTimer);
     });
-});
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTabAway)
+  } else {
+    initTabAway()
+  }
 (function () {
     if (window.__cursorToggleBootstrapped) return
     window.__cursorToggleBootstrapped = true
