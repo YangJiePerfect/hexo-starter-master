@@ -6,15 +6,21 @@ const tabAwayConfig = {
     // 正常状态
     normal: {
         // 留空表示使用页面原始标题
-        title: '',
+        title: '这是阳介的小站喵~',
         // 正常图标，留空使用主题默认favicon
-        icon: ''
+        icon: '/img/Collei avatar.png'
     },
 
     // 离开状态
     away: {
         // 离开时显示的标题
-        title: 'Ciallo～(∠・ω< )⌒☆',
+        titles: [
+            'Ciallo～(∠・ω< )⌒☆',
+            '主人去哪了喵？',
+            '等你回来喵~',
+            '不要走嘛~',
+            '多回来陪陪我嘛~'
+        ],
         // 离开时显示的图标（建议尺寸：32×32px PNG格式）
         icon: '/img/Collei avatar.png'
     }
