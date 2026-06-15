@@ -61,7 +61,9 @@ function updateFavicon(iconUrl) {
 // 切换到离开状态
 function goAway() {
     console.log('用户离开页面，标签页变身');
-    updateTabTitle(tabAwayConfig.away.title);
+    var titles = tabAwayConfig.away.titles;
+    var randomTitle = titles[Math.floor(Math.random() * titles.length)];
+    updateTabTitle(randomTitle);
     updateFavicon(tabAwayConfig.away.icon);
 }
 
