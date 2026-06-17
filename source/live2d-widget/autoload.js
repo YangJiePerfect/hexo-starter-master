@@ -95,7 +95,7 @@ if (screen.width >= 768) {
 	]).then(() => {
 		// 模型列表版本号，更新 model_list.json 后手动递增
 		// 旧版本 localStorage 中的 modelId 会被自动清除
-		var modelListVersion = "v7";
+		var modelListVersion = "v8";
 		if (localStorage.getItem("modelListVersion") !== modelListVersion) {
 			localStorage.removeItem("modelId");
 			localStorage.removeItem("modelTexturesId");
@@ -110,7 +110,7 @@ if (screen.width >= 768) {
 			tools: ["hitokoto", "asteroids", "switch-model", "switch-texture", "photo", "info", "quit"],
 
 			//指定默认加载的模型ID=
-			modelId: 1,
+			modelId: 0,
 			//可选：同时指定默认皮肤ID
 			modelTexturesId: 0
 		});
