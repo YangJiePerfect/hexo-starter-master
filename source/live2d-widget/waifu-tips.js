@@ -225,18 +225,28 @@
                     });
             }
         },
-        asteroids: {
-            icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L277.3 424.9l-40.1 74.5c-5.2 9.7-16.3 14.6-27 11.9S192 499 192 488V392c0-5.3 1.8-10.5 5.1-14.7L362.4 164.7c2.5-7.1-6.5-14.3-13-8.4L170.4 318.2l-32 28.9 0 0c-9.2 8.3-22.3 10.6-33.8 5.8l-85-35.4C8.4 312.8 .8 302.2 .1 290s5.5-23.7 16.1-29.8l448-256c10.7-6.1 23.9-5.5 34 1.4z"/></svg>',
+        "switch-fps": {
+            icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M448 32C483.3 32 512 60.65 512 96V416C512 451.3 483.3 480 448 480H64C28.65 480 0 451.3 0 416V96C0 60.65 28.65 32 64 32H448zM192 160C192 142.3 177.7 128 160 128C142.3 128 128 142.3 128 160V256C128 273.7 142.3 288 160 288C177.7 288 192 273.7 192 256V160zM384 128C366.3 128 352 142.3 352 160V352C352 369.7 366.3 384 384 384C401.7 384 416 369.7 416 352V160C416 142.3 401.7 128 384 128zM288 160C288 142.3 273.7 128 256 128C238.3 128 224 142.3 224 160V320C224 337.7 238.3 352 256 352C273.7 352 288 337.7 288 320V160z"/></svg>',
             callback: () => {
-                if (window.Asteroids) {
-                    if (!window.ASTEROIDSPLAYERS)
-                        window.ASTEROIDSPLAYERS = [];
-                    window.ASTEROIDSPLAYERS.push(new Asteroids());
-                } else {
-                    const script = document.createElement("script");
-                    script.src = "https://fastly.jsdelivr.net/gh/stevenjoezhang/asteroids/asteroids.js";
-                    document.head.appendChild(script);
-                }
+                // 帧率模式：0=30fps, 1=60fps, 2=无限
+                const modes = [30, 60, 0];
+                const labels = ["30FPS", "60FPS", "无限制"];
+                const messages = [
+                    "已将看板娘渲染帧率切换至30FPS喵~",
+                    "已将看板娘渲染帧率切换至60FPS喵~",
+                    "已将看板娘渲染帧率切换至无限制帧率喵~，可能会造成卡顿喵~"
+                ];
+                let currentMode = 0;
+                try {
+                    const saved = localStorage.getItem("live2d-fps-mode");
+                    if (saved !== null) currentMode = parseInt(saved);
+                } catch (e) {}
+                currentMode = (currentMode + 1) % 3;
+                window.Live2D._fpsLimit = modes[currentMode];
+                try {
+                    localStorage.setItem("live2d-fps-mode", currentMode);
+                } catch (e) {}
+                showMessage(messages[currentMode], 4000, 10);
             }
         },
         "switch-model": {
@@ -419,17 +429,26 @@
             });
         }
 
-        // 初始化 DOM
+        // 初始化 DOM（canvas 分辨率降低以减少 GPU 负载）
         localStorage.removeItem("waifu-display");
         sessionStorage.removeItem("waifu-text");
         document.body.insertAdjacentHTML(
             "beforeend",
             `<div id="waifu">
                 <div id="waifu-tips"></div>
-                <canvas id="live2d" width="800" height="800"></canvas>
+                <canvas id="live2d" width="400" height="400"></canvas>
                 <div id="waifu-tool"></div>
             </div>`
         );
+
+        // 恢复保存的帧率设置
+        try {
+            const savedMode = localStorage.getItem("live2d-fps-mode");
+            if (savedMode !== null) {
+                const fpsMap = [30, 60, 0];
+                window.Live2D._fpsLimit = fpsMap[parseInt(savedMode)] || 30;
+            }
+        } catch (e) {}
         setTimeout(() => {
             document.getElementById("waifu").style.bottom = 0;
         }, 0);
