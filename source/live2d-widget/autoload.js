@@ -110,7 +110,7 @@ if (screen.width >= 768) {
 			tools: ["hitokoto", "asteroids", "switch-model", "switch-texture", "photo", "info", "quit"],
 
 			//指定默认加载的模型ID=
-			modelId: 8,
+			modelId: 1,
 			//可选：同时指定默认皮肤ID
 			modelTexturesId: 0
 		});
