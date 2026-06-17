@@ -93,13 +93,26 @@ if (screen.width >= 768) {
 		loadExternalResource(live2d_path + "live2d.min.js", "js"),
 		loadExternalResource(live2d_path + "waifu-tips.js", "js")
 	]).then(() => {
+		// 模型列表版本号，更新 model_list.json 后手动递增
+		// 旧版本 localStorage 中的 modelId 会被自动清除
+		var modelListVersion = "v7";
+		if (localStorage.getItem("modelListVersion") !== modelListVersion) {
+			localStorage.removeItem("modelId");
+			localStorage.removeItem("modelTexturesId");
+			localStorage.setItem("modelListVersion", modelListVersion);
+		}
 		// 配置选项的具体用法见 README.md
 		initWidget({
 			waifuPath: live2d_path + "waifu-tips.json",
 			//apiPath: "https://live2d.fghrsh.net/api/",
-			// 国内 CDN 加速：jsDelivr 中国镜像
-			cdnPath: "https://jsd.onmicrosoft.cn/gh/fghrsh/live2d_api/",
-			tools: ["hitokoto", "asteroids", "switch-model", "switch-texture", "photo", "info", "quit"]
+			// 本地模型路径（widget 会自动拼接 model/ 子目录）
+			cdnPath: live2d_path,
+			tools: ["hitokoto", "asteroids", "switch-model", "switch-texture", "photo", "info", "quit"],
+
+			//指定默认加载的模型ID=
+			modelId: 8,
+			//可选：同时指定默认皮肤ID
+			modelTexturesId: 0
 		});
 		// 启动 waifu-tips 文字颜色自适应
 		startWaifuTipsColorAdapt();

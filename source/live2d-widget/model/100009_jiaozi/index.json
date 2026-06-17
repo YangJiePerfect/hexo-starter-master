@@ -1,0 +1,64 @@
+{
+    "version": "1.0.0",
+    "model": "model.moc",
+    "textures": [
+        "texture_00.png"
+    ],
+    "physics": "moc/physics.json",
+    "layout": {
+        "center_x": 0,
+        "center_y": -0.5,
+        "width": 2
+    },
+    "hit_areas_custom": {
+        "head_x": [-0.35, 0.6],
+        "head_y": [0.19, -0.2],
+        "body_x": [-0.3, -0.25],
+        "body_y": [0.3, -0.9]
+    },
+    "expressions": [
+        {
+            "file": "expression/chijing.exp.json",
+            "name": "chijing.exp.json"
+        },
+        {
+            "file": "expression/idle.exp.json",
+            "name": "idle.exp.json"
+        },
+        {
+            "file": "expression/kaixin.exp.json",
+            "name": "kaixin.exp.json"
+        },
+        {
+            "file": "expression/nanguo.exp.json",
+            "name": "nanguo.exp.json"
+        },
+        {
+            "file": "expression/shengqi.exp.json",
+            "name": "shengqi.exp.json"
+        }
+    ],
+    "motions": {
+        "idle": [
+            {
+                "file": "action/idle.mtn",
+                "fade_in": 2000,
+                "fade_out": 2000
+            }
+        ],
+        "flick_head": [
+            {
+                "file": "action/moxiaba.mtn",
+                "fade_in": 500,
+                "fade_out": 200
+            }
+        ],
+        "tap_body": [
+            {
+                "file": "action/shenshou.mtn",
+                "fade_in": 500,
+                "fade_out": 200
+            }
+        ]
+    }
+}

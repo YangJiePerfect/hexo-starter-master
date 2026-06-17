@@ -1,0 +1,66 @@
+{
+    "groups": [
+        {
+            "dir": "texture_00",
+            "files": [
+                "closet-default-v2.png"
+            ]
+        },
+        {
+            "dir": "texture_01",
+            "files": [
+                "cba-normal-upper.png",
+                "cba-super-upper.png",
+                "default-upper.png",
+                "newyear-upper.png",
+                "school2017-upper.png",
+                "spring-2018-upper.png",
+                "summer2017-high-upper.png",
+                "summer2017-low-upper.png",
+                "tomo-high-upper.png",
+                "tomo-low-upper.png",
+                "valley2017-upper.png",
+                "vdays-upper.png",
+                "xmas-upper.png"
+            ]
+        },
+        {
+            "dir": "texture_02",
+            "files": [
+                "cba-normal-lower.png",
+                "cba-super-lower.png",
+                "default-lower.png",
+                "newyear-lower.png",
+                "school2017-lower.png",
+                "spring-2018-lower.png",
+                "summer2017-high-lower.png",
+                "summer2017-low-lower.png",
+                "tomo-high-lower.png",
+                "tomo-low-lower.png",
+                "valley2017-lower.png",
+                "vdays-lower.png",
+                "xmas-lower.png"
+            ]
+        },
+        {
+            "dir": "texture_03",
+            "files": [
+                "cba-hat.png",
+                "default-hat.png",
+                "newyear-hat.png",
+                "school2017-hat.png",
+                "spring-2018-hat.png",
+                "summer2017-hat.png",
+                "tomo-high-hat.png",
+                "tomo-low-hat.png",
+                "valley2017-hat.png",
+                "vdays-hat.png",
+                "xmas-hat.png",
+                "xmas-headwear.png"
+            ]
+        }
+    ],
+    "linked": [
+        [1, 2]
+    ]
+}

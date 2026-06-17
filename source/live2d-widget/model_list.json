@@ -1,0 +1,30 @@
+{
+    "models": [
+        "100009_jiaozi",
+        "100002_xiehuangtangbao",
+        "100055_jilixia",
+        "100001_hugeng",
+        "100082_ghj",
+        "Pio",
+        "Tia",
+        "22",
+        "33",
+        "histoirenohover",
+        "neptune_classic"
+
+    ],
+    "messages": [
+        "饺子：热腾腾的饺子来啦！要加醋吗？",
+        "蟹黄汤包：本大爷可是扬州名点，尝尝看？",
+        "吉利虾：吉利虾为您带来好运哦 ~",
+        "鹄羹：在下鹄羹，愿为您奉上暖心佳肴",   
+        "桂花酒：桂花酿好了，要来一杯吗？",
+        "来自 Potion Maker 的 Pio 酱 ~",
+        "来自 Potion Maker 的 Tia 酱 ~",
+        "来自 Bilibili Live 的 22 哦 ~",
+        "来自 Bilibili Live 的 33 的说",
+        "Histoire (nohover) ~",
+        "Neptune Classic ~"
+
+    ]
+}
