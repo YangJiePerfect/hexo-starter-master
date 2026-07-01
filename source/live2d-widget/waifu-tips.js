@@ -10,6 +10,15 @@
 
     let tipTimer;
 
+    // 转义 HTML 特殊字符，防止第三方数据注入
+    function escapeHtml(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
     // 显示提示文字
     function showMessage(msg, timeout, priority) {
         if (
@@ -26,7 +35,7 @@
         msg = randomPick(msg);
         sessionStorage.setItem("waifu-text", priority);
         const tipsEl = document.getElementById("waifu-tips");
-        tipsEl.innerHTML = msg;
+        tipsEl.textContent = msg;
         tipsEl.classList.add("waifu-tips-active");
         tipTimer = setTimeout(() => {
             sessionStorage.removeItem("waifu-text");
@@ -64,15 +73,13 @@
             if (this.useCDN) {
                 if (!this.modelList) await this.loadModelList();
                 const modelName = randomPick(this.modelList.models[modelId]);
-                loadlive2d(
-                    "live2d",
-                    `${this.cdnPath}model/${modelName}/index.json`
-                );
+                this.lastLoadlive2dArg =
+                    `${this.cdnPath}model/${modelName}/index.json`;
+                loadlive2d("live2d", this.lastLoadlive2dArg);
             } else {
-                loadlive2d(
-                    "live2d",
-                    `${this.apiPath}get/?id=${modelId}-${texturesId}`
-                );
+                this.lastLoadlive2dArg =
+                    `${this.apiPath}get/?id=${modelId}-${texturesId}`;
+                loadlive2d("live2d", this.lastLoadlive2dArg);
                 console.log(
                     `Live2D 模型 ${modelId}-${texturesId} 加载完成`
                 );
@@ -217,8 +224,14 @@
                 fetch("https://v1.hitokoto.cn")
                     .then(res => res.json())
                     .then(data => {
-                        const info = `这句一言来自 <span>「${data.from}」</span>，是 <span>${data.creator}</span> 在 hitokoto.cn 投稿的。`;
-                        showMessage(data.hitokoto, 6000, 9);
+                        const from = escapeHtml(data.from);
+                        const creator = escapeHtml(data.creator);
+                        const hitokoto = escapeHtml(data.hitokoto);
+                        const info =
+                            '这句一言来自 「' + from +
+                            '」，是 ' + creator +
+                            ' 在 hitokoto.cn 投稿的。';
+                        showMessage(hitokoto, 6000, 9);
                         setTimeout(() => {
                             showMessage(info, 4000, 9);
                         }, 6000);
@@ -319,9 +332,9 @@
                                 return text;
                         }
                     }
-                    const title = `欢迎阅读<span>「${
+                    const title = `欢迎阅读「${
                         document.title.split(" - ")[0]
-                    }」</span>`;
+                    }」`;
                     if (document.referrer !== "") {
                         const referrer = new URL(document.referrer);
                         const host = referrer.hostname.split(".")[1];
@@ -336,7 +349,7 @@
                             host in engineMap
                                 ? engineMap[host]
                                 : referrer.hostname;
-                        return `Hello！来自 <span>${source}</span> 的朋友<br>${title}`;
+                        return `Hello！来自 ${source} 的朋友\n${title}`;
                     }
                     return title;
                 })(tipsConfig.time),
@@ -513,4 +526,15 @@
             initLive2D(options);
         }
     };
+
+    // visibilitychange: 页面不可见时隐藏 Live2D 以降低 GPU 占用
+    document.addEventListener("visibilitychange", function() {
+        var waifu = document.getElementById("waifu");
+        if (!waifu) return;
+        if (document.hidden) {
+            waifu.style.display = "none";
+        } else {
+            waifu.style.display = "";
+        }
+    });
 }();

@@ -1,43 +1,12 @@
 (function () {
-  var BLUR_TARGET_FPS = 30
-  var blurFrameCount = 0
-  var blurFrameInterval = Math.round(60 / Math.max(BLUR_TARGET_FPS, 1))
   var blurCooldownUntil = 0
-
-  function shouldUpdateBlur () {
-    blurFrameCount++
-    if (blurFrameCount >= blurFrameInterval) {
-      blurFrameCount = 0
-      return true
-    }
-    return false
-  }
-
-  function detectDeviceType () {
-    var ua = (navigator.userAgent || '').toLowerCase()
-    var isIPad = /ipad/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1 && !window.MSStream)
-    if (isIPad) return 'pc'
-
-    var mobileRegex = /android|webos|iphone|ipod|blackberry|iemobile|opera mini/i
-    if (mobileRegex.test(ua)) return 'mobile'
-
-    var hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
-    var isSmallScreen = window.innerWidth <= 768
-    if (hasTouch && isSmallScreen) return 'mobile'
-
-    return 'pc'
-  }
 
   function isPostPage () {
     return /\/\d{4}\/\d{2}\/\d{2}\//.test(window.location.pathname)
   }
 
   function isVideoPage () {
-    var p = window.location.pathname
-    return p === '/' || p === '/archives/' || p === '/archives' ||
-      /^\/archives\/\d{4}\/\d{2}\//.test(p) ||
-      p === '/tags/' || p === '/tags' ||
-      p === '/about/' || p === '/about'
+    return isVideoPageUrl(window.location.pathname)
   }
 
   function isVideoPageUrl (pathname) {
@@ -89,8 +58,13 @@
     v.muted = true
     v.playsInline = true
     v.setAttribute('playsinline', '')
-    v.setAttribute('preload', 'auto')
+    v.setAttribute('preload', 'metadata')
+    v.setAttribute('poster', '/img/pc_bg.jpg')
     v.setAttribute('disableRemotePlayback', '')
+    v.addEventListener('canplay', function () {
+      // 视频就绪后主动触发滚动检测，确保因视频未就绪而未应用的 frosted 状态能被重新应用
+      window.dispatchEvent(new Event('scroll'))
+    })
     w.appendChild(v)
 
     w.appendChild(Object.assign(document.createElement('div'), { className: 'header-video-mask' }))
@@ -111,12 +85,6 @@
     if (header) {
       header.classList.toggle('video-page', video)
     }
-  }
-
-  function getFrostedTriggerElement () {
-    return document.querySelector('#body-wrap > main.layout') ||
-      document.querySelector('#content-inner') ||
-      document.querySelector('main#content')
   }
 
   function setStableVideoHeight (force) {
@@ -143,65 +111,87 @@
     }
   }
 
+  function getFrostedTriggerElement () {
+    return document.querySelector('#body-wrap > main.layout') ||
+      document.querySelector('#content-inner') ||
+      document.querySelector('main#content')
+  }
+
   function initScrollDetector () {
-    var triggerEl = getFrostedTriggerElement()
-    if (!triggerEl) return
-
-    var headerVideo = document.querySelector('body > .video-wrapper .header-video-bg')
     var welcomeEl = document.querySelector('body > .video-wrapper .header-welcome')
-    var blurTicking = false
-    var parallaxTicking = false
+    var triggerEl = getFrostedTriggerElement()
+    var headerVideo = document.querySelector('body > .video-wrapper .header-video-bg')
 
-    function updateBlur () {
-      blurTicking = false
-      var now = Date.now()
-      if (now < blurCooldownUntil) {
-        if (headerVideo) headerVideo.classList.remove('frosted')
-        return
-      }
-      if (!shouldUpdateBlur()) return
-      var rect = triggerEl.getBoundingClientRect()
-      if (headerVideo) headerVideo.classList.toggle('frosted', rect.top <= 0)
-    }
+    var scrollTicking = false
+    var firstCheck = true
 
-    function updateParallax () {
-      parallaxTicking = false
-      if (!welcomeEl) return
+    function updateScroll () {
+      scrollTicking = false
       var scrollY = window.scrollY || window.pageYOffset
-      var parallax = scrollY * -0.35
-      if (document.body.classList.contains('is-mobile')) {
-        welcomeEl.style.transform = 'translate(-50%,calc(-50% + ' + parallax + 'px))'
+
+      if (welcomeEl) {
+        var parallax = scrollY * -0.5
+        var opacity = Math.max(0, 1 - scrollY / 300)
+        if (document.body.classList.contains('is-mobile')) {
+          welcomeEl.style.transform = 'translate3d(-50%,calc(-50% + ' + parallax + 'px),0)'
+        } else {
+          welcomeEl.style.transform = 'translate3d(-50%,' + parallax + 'px,0)'
+        }
+        welcomeEl.style.opacity = opacity
+      }
+
+      if (triggerEl && headerVideo) {
+        if (firstCheck) {
+          firstCheck = false
+          var rect0 = triggerEl.getBoundingClientRect()
+          applyFrosted(rect0.top <= 0)
+        } else {
+          var now = Date.now()
+          if (now < blurCooldownUntil) {
+            applyFrosted(false)
+          } else {
+            var rect = triggerEl.getBoundingClientRect()
+            applyFrosted(rect.top <= 0)
+          }
+        }
+      }
+    }
+
+    function onScroll () {
+      if (!scrollTicking) {
+        scrollTicking = true
+        requestAnimationFrame(updateScroll)
+      }
+    }
+
+    var currentFrosted = false
+    function applyFrosted (shouldFrost) {
+      if (shouldFrost === currentFrosted) return
+      currentFrosted = shouldFrost
+      if (!headerVideo) return
+      if (shouldFrost) {
+        headerVideo.classList.add('frosted')
+        document.body.classList.add('is-main-frosted')
       } else {
-        welcomeEl.style.transform = 'translateX(-50%) translateY(' + parallax + 'px)'
+        headerVideo.classList.remove('frosted')
+        headerVideo.classList.add('frosted-out')
+        document.body.classList.remove('is-main-frosted')
+        var onTransitionEnd = function (e) {
+          if (e.propertyName !== 'filter' &&
+            e.propertyName !== 'transform') return
+          headerVideo.removeEventListener('transitionend', onTransitionEnd)
+          headerVideo.classList.remove('frosted-out')
+        }
+        headerVideo.addEventListener('transitionend', onTransitionEnd)
       }
     }
 
-    function onScrollBlur () {
-      if (!blurTicking) {
-        blurTicking = true
-        requestAnimationFrame(updateBlur)
-      }
-    }
-
-    function onScrollParallax () {
-      if (!parallaxTicking) {
-        parallaxTicking = true
-        requestAnimationFrame(updateParallax)
-      }
-    }
-
-    if (window.frostedScrollHandler) {
-      window.removeEventListener('scroll', window.frostedScrollHandler, { passive: true })
-    }
     if (window.parallaxScrollHandler) {
       window.removeEventListener('scroll', window.parallaxScrollHandler, { passive: true })
     }
-
-    window.frostedScrollHandler = onScrollBlur
-    window.parallaxScrollHandler = onScrollParallax
-    window.addEventListener('scroll', onScrollBlur, { passive: true })
-    window.addEventListener('scroll', onScrollParallax, { passive: true })
-    requestAnimationFrame(updateBlur)
+    window.parallaxScrollHandler = onScroll
+    window.addEventListener('scroll', onScroll, { passive: true })
+    requestAnimationFrame(updateScroll)
   }
 
   function injectMailButton () {
@@ -267,10 +257,11 @@
     }, true)
 
     document.addEventListener('pjax:send', function () {
+      if (pendingUrl) document.body.classList.toggle('is-video-page', isVideoPageUrl(pendingUrl))
       blurCooldownUntil = Date.now() + 500
       var hv = document.querySelector('body > .video-wrapper .header-video-bg')
       if (hv) hv.classList.remove('frosted')
-      if (pendingUrl) document.body.classList.toggle('is-video-page', isVideoPageUrl(pendingUrl))
+      document.body.classList.remove('is-main-frosted')
     })
 
     document.addEventListener('pjax:complete', function () {
@@ -320,7 +311,7 @@
   }
 
   function initMobile () {
-    var deviceType = detectDeviceType()
+    var deviceType = window.DeviceDetector.detectDeviceType()
     var isMobile = deviceType === 'mobile'
     document.body.classList.toggle('is-mobile', isMobile)
     document.body.classList.toggle('is-pc', !isMobile)
@@ -354,14 +345,17 @@
   function onVisibilityChange () {
     var video = document.querySelector('body > .video-wrapper .header-video-bg')
     if (!video) return
-    if (document.hidden) {
-      video.pause()
+    if (!document.hidden) {
+      // 后台返回时给页面渲染一段稳定时间，避免立即触发 frosted 滤镜
+      blurCooldownUntil = Date.now() + 500
+      if (video.paused) {
+        video.play().catch(function () {})
+      }
     } else {
-      video.play().catch(function () {})
+      if (!video.paused) video.pause()
     }
   }
 
-  blurCooldownUntil = Date.now() + 500
   setupPjaxTransition()
 
   if (document.readyState === 'loading') {
@@ -381,7 +375,6 @@
   window.addEventListener('orientationchange', function () {
     setTimeout(function () {
       setStableVideoHeight(true)
-      if (window.frostedScrollHandler) window.frostedScrollHandler()
     }, 300)
   }, { passive: true })
 

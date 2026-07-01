@@ -26,16 +26,12 @@ function loadExternalResource(url, type) {
 	});
 }
 
-// waifu-tips 文字颜色自适应：30fps 采样背景色
+// waifu-tips 文字颜色自适应：事件驱动单次采样（避免 rAF 循环阻塞主线程）
 function startWaifuTipsColorAdapt() {
-	var TARGET_FPS = 30;
-	var frameInterval = Math.round(1000 / TARGET_FPS);
-	var lastFrameTime = 0;
 	var canvas = document.createElement('canvas');
 	var ctx = canvas.getContext('2d', { willReadFrequently: true });
 	canvas.width = 1;
 	canvas.height = 1;
-	var sampling = false;
 
 	function getLuminance(r, g, b) {
 		return 0.299 * r + 0.587 * g + 0.114 * b;
@@ -70,24 +66,38 @@ function startWaifuTipsColorAdapt() {
 		}
 	}
 
-	function tick(now) {
-		if (!sampling) return;
-		if (now - lastFrameTime >= frameInterval) {
-			lastFrameTime = now;
-			sampleBackground();
+	// 事件驱动：监听 waifu-tips-active 类变化，仅采样一次
+	function setupObserver() {
+		var tips = document.getElementById('waifu-tips');
+		if (!tips) {
+			setTimeout(setupObserver, 500);
+			return;
 		}
-		requestAnimationFrame(tick);
+
+		if (window.MutationObserver) {
+			var observer = new MutationObserver(function (mutations) {
+				for (var i = 0; i < mutations.length; i++) {
+					if (mutations[i].attributeName === 'class') {
+						if (tips.classList.contains('waifu-tips-active')) {
+							setTimeout(sampleBackground, 100);
+						}
+						break;
+					}
+				}
+			});
+			observer.observe(tips, { attributes: true, attributeFilter: ['class'] });
+		}
+
+		if (tips.classList.contains('waifu-tips-active')) {
+			setTimeout(sampleBackground, 100);
+		}
 	}
 
-	// 开始采样（延迟启动，等待 DOM 就绪）
-	setTimeout(function () {
-		sampling = true;
-		requestAnimationFrame(tick);
-	}, 1500);
+	setTimeout(setupObserver, 1500);
 }
 
 // 加载 waifu.css live2d.min.js waifu-tips.js
-if (screen.width >= 768) {
+if (window.innerWidth >= 768) {
 	Promise.all([
 		loadExternalResource(live2d_path + "waifu.css", "css"),
 		loadExternalResource(live2d_path + "live2d.min.js", "js"),

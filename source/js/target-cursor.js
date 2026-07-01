@@ -37,16 +37,6 @@
     document.dispatchEvent(new CustomEvent('target-cursor:change', { detail: { enabled: enabled } }))
   }
 
-  function isMobileDevice () {
-    var ua = (navigator.userAgent || navigator.vendor || window.opera || '').toLowerCase()
-    var isIPad = /ipad/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1 && !window.MSStream)
-    if (isIPad) return false
-    var hasTouchScreen = 'ontouchstart' in window || navigator.maxTouchPoints > 0
-    var isSmallScreen = window.innerWidth <= 768
-    var mobileRegex = /android|webos|iphone|ipod|blackberry|iemobile|opera mini/i
-    return (hasTouchScreen && isSmallScreen) || mobileRegex.test(ua)
-  }
-
   function isArticlePage () {
     return /\/\d{4}\/\d{2}\/\d{2}\//.test(window.location.pathname)
   }
@@ -59,20 +49,22 @@
 
   function getEffectiveBackgroundColor (element) {
     var el = element
-    while (el && el !== document.body && el !== document.documentElement) {
+    var depth = 0
+    while (el && el !== document.body && el !== document.documentElement && depth < 10) {
       var bg = window.getComputedStyle(el).backgroundColor
       var rgb = parseRgbFromStr(bg)
       if (rgb) return rgb
       el = el.parentElement
+      depth++
     }
     return parseRgbFromStr(window.getComputedStyle(document.body).backgroundColor) || { r: 255, g: 255, b: 255 }
   }
 
   var sampleOffsets = []
-  for (var so = 0; so < 5; so++) {
-    for (var sj = 0; sj < 5; sj++) {
-      var sdx = (so / 4 - 0.5) * 28
-      var sdy = (sj / 4 - 0.5) * 28
+  for (var so = 0; so < 3; so++) {
+    for (var sj = 0; sj < 3; sj++) {
+      var sdx = (so / 2 - 0.5) * 28
+      var sdy = (sj / 2 - 0.5) * 28
       if (sdx * sdx + sdy * sdy <= 196) {
         sampleOffsets.push([sdx, sdy])
       }
@@ -155,7 +147,7 @@
 
   function setupTargetCursor () {
     if (window.__targetCursorHexoLoaded || !readCursorEnabledState()) return
-    if (isMobileDevice()) return
+    if (window.DeviceDetector.isMobileDevice()) return
     if (!window.gsap) {
       console.warn('[target-cursor] gsap is required.')
       return
@@ -175,6 +167,8 @@
     var ring = cursor.querySelector('.target-cursor-ring')
     var ringInner = ring.querySelector('.target-cursor-ring-inner')
     var glow = ring.querySelector('.target-cursor-glow')
+
+    cursor.style.willChange = 'transform'
 
     var activeTarget = null
     var leaveHandler = null
@@ -316,12 +310,17 @@
       }
     }
 
+    var layerUpdateTimer = null
     function scheduleCursorLayerUpdate () {
-      if (layerRaf) return
-      layerRaf = window.requestAnimationFrame(function () {
-        layerRaf = null
-        placeCursorOnTop()
-      })
+      if (layerUpdateTimer) return
+      layerUpdateTimer = setTimeout(function () {
+        layerUpdateTimer = null
+        if (layerRaf) return
+        layerRaf = window.requestAnimationFrame(function () {
+          layerRaf = null
+          placeCursorOnTop()
+        })
+      }, 100)
     }
 
     function clearSnapState () {
@@ -562,19 +561,32 @@
       }
     }
 
+    var mouseOverRaf = null
+    var mouseOverTarget = null
     function mouseOverHandler (event) {
-      enterTarget(findTarget(event.target))
+      mouseOverTarget = event.target
+      if (mouseOverRaf) return
+      mouseOverRaf = window.requestAnimationFrame(function () {
+        mouseOverRaf = null
+        enterTarget(findTarget(mouseOverTarget))
+      })
     }
 
+    var scrollTicking = false
     function scrollHandler () {
-      if (!activeTarget) return
-      var ringRect = ring.getBoundingClientRect()
-      var centerX = ringRect.left + ringRect.width / 2
-      var centerY = ringRect.top + ringRect.height / 2
-      var elementUnderMouse = document.elementFromPoint(centerX, centerY)
-      var stillOverTarget = elementUnderMouse &&
-        (elementUnderMouse === activeTarget || elementUnderMouse.closest(config.targetSelector) === activeTarget)
-      if (!stillOverTarget && leaveHandler) leaveHandler()
+      if (scrollTicking) return
+      scrollTicking = true
+      window.requestAnimationFrame(function () {
+        scrollTicking = false
+        if (!activeTarget) return
+        var ringRect = ring.getBoundingClientRect()
+        var centerX = ringRect.left + ringRect.width / 2
+        var centerY = ringRect.top + ringRect.height / 2
+        var elementUnderMouse = document.elementFromPoint(centerX, centerY)
+        var stillOverTarget = elementUnderMouse &&
+          (elementUnderMouse === activeTarget || elementUnderMouse.closest(config.targetSelector) === activeTarget)
+        if (!stillOverTarget && leaveHandler) leaveHandler()
+      })
     }
 
     function mouseDownHandler () {
@@ -653,10 +665,7 @@
     if (window.MutationObserver) {
       layerObserver = new MutationObserver(scheduleCursorLayerUpdate)
       layerObserver.observe(document.body, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-        attributeFilter: ['class', 'open']
+        childList: true
       })
     }
 
