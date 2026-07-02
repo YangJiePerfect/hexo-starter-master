@@ -117,7 +117,7 @@ if (window.innerWidth >= 768) {
 			//apiPath: "https://live2d.fghrsh.net/api/",
 			// 本地模型路径（widget 会自动拼接 model/ 子目录）
 			cdnPath: live2d_path,
-			tools: ["hitokoto", "asteroids", "switch-model", "switch-texture", "photo", "info", "quit"],
+			tools: ["hitokoto", "switch-fps", "switch-model", "switch-texture", "photo", "info", "quit"],
 
 			//指定默认加载的模型ID=
 			modelId: 0,

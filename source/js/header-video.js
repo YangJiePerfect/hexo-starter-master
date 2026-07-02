@@ -177,8 +177,7 @@
         headerVideo.classList.add('frosted-out')
         document.body.classList.remove('is-main-frosted')
         var onTransitionEnd = function (e) {
-          if (e.propertyName !== 'filter' &&
-            e.propertyName !== 'transform') return
+          if (e.propertyName !== 'transform') return
           headerVideo.removeEventListener('transitionend', onTransitionEnd)
           headerVideo.classList.remove('frosted-out')
         }
