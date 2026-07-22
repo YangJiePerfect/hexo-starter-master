@@ -1,0 +1,20 @@
+==================================================
+变更时间: 2026-07-18 04:18:14 (UTC+8)
+任务: 修复 waifu-tips.js DOM XSS 漏洞
+==================================================
+
+--------------------------------------------------
+【任务A】修复 waifu-tips.js DOM-based XSS 漏洞
+--------------------------------------------------
+文件: source\live2d-widget\waifu-tips.js
+变更: 新增 escapeHtml 函数；对 hitokoto API 返回的 hitokoto/from/creator 字段在插入 innerHTML 前进行 HTML 转义
+原因: hitokoto 一言 API 返回的文本内容未经转义直接拼接到 innerHTML，存在 DOM-based XSS 风险（API 数据不受信任，可能被注入恶意 HTML/JS）
+
+==================================================
+注: Task B（cf-ip-updater Worker 优选 IP 功能）曾尝试实施，
+但因 Cloudflare Error 1000（CF zone 内域名无法灰云指向 CF IP）
+方案A（A记录）和方案B（CNAME→cf.090227.xyz）均失败。
+用户决定撤销该任务，所有相关文件（cf-ip-updater目录、.gitignore追加规则、
+部署的Worker、计划文件）已全部清理，博客DNS已回滚恢复原样。
+撤销时间: 2026-07-18 04:18:14
+==================================================
