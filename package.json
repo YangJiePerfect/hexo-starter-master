@@ -29,6 +29,6 @@
     "playwright": "^1.61.1"
   },
   "devDependencies": {
-    "puppeteer": "^25.3.0"
+    "puppeteer": "^25.5.0"
   }
 }
